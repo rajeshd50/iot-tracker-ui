@@ -1,0 +1,35 @@
+.LoginContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  .LoginSection {
+    margin: 0 auto;
+    max-width: 50%;
+    padding: 15px;
+
+    @media screen and (max-width: 900px) {
+      max-width: initial;
+      width: 100%;
+      padding: 30px;
+    }
+
+    @media screen and (max-width: 600px) {
+      max-width: initial;
+      width: 100%;
+      padding: 30px;
+    }
+
+    .LoginHeaderSection {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+
+      img {
+        width: 50px;
+      }
+    }
+  }
+}

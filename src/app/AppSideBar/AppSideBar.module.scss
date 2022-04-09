@@ -1,0 +1,27 @@
+.AppSideBar {
+  .MuiToolbar-root {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+.AppSideBarTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  .AppSideBarImgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+.AppSidebarUserInfo {
+  margin: 20px 10px;
+  > div {
+    padding: 10px;
+  }
+}
