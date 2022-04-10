@@ -1,30 +1,14 @@
-import { Box, Chip, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
+import { Device } from "../../../../models/device.model";
+import DeviceStatusChip from "../device-status-chip/DeviceStatusChip";
 
 export interface IDeviceDetailsWidgetProps {
-  title: string;
-  subTitle: string;
-  status: "online" | "offline" | "warning";
+  device: Device;
 }
 
-function DeviceDetailsWidget({
-  title,
-  subTitle,
-  status,
-}: IDeviceDetailsWidgetProps) {
-  const getChip = () => {
-    switch (status) {
-      case "online":
-        return <Chip label="Online" color="primary" variant="outlined" />;
-      case "offline":
-        return <Chip label="Offline" color="warning" variant="outlined" />;
-      case "warning":
-        return <Chip label="Warning" color="error" variant="outlined" />;
-      default:
-        return <Chip label="Online" color="primary" variant="outlined" />;
-    }
-  };
+function DeviceDetailsWidget({ device }: IDeviceDetailsWidgetProps) {
   return (
     <Paper elevation={0}>
       <Box
@@ -37,10 +21,12 @@ function DeviceDetailsWidget({
         }}
       >
         <Box>
-          <Typography variant="h6">{title}</Typography>
-          <Typography variant="subtitle2">{subTitle}</Typography>
+          <Typography variant="h6">{device.name}</Typography>
+          <Typography variant="subtitle2">{device.serialNumber}</Typography>
         </Box>
-        <Box>{getChip()}</Box>
+        <Box>
+          <DeviceStatusChip status={device.details.status} />
+        </Box>
       </Box>
     </Paper>
   );

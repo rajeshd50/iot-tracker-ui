@@ -12,7 +12,9 @@ function Login() {
         <Box className={styles.LoginSection}>
           <Box className={styles.LoginHeaderSection}>
             <Box>
-              <Typography variant="h5">Sign in to Vehicle Tracker</Typography>
+              <Typography variant="h5">
+                Sign in to Ezymote vehicle tracker
+              </Typography>
               <Typography variant="subtitle1">
                 Enter your details below
               </Typography>

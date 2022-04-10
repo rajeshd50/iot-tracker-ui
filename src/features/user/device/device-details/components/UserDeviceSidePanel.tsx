@@ -1,5 +1,6 @@
 import { Box, Drawer } from "@mui/material";
 import React, { useRef } from "react";
+import { Device } from "../../../../../models/device.model";
 import UserDeviceSidePanelContent from "./UserDeviceSidePanelContent";
 
 const SIDE_PANEL_WIDTH = 360;
@@ -7,11 +8,13 @@ const SIDE_PANEL_WIDTH = 360;
 export interface IUserDeviceSidePanelProps {
   isMobileOpen: boolean;
   onClose: () => void;
+  device: Device;
 }
 
 function UserDeviceSidePanel({
   isMobileOpen,
   onClose,
+  device,
 }: IUserDeviceSidePanelProps) {
   const parentRef = useRef();
   return (
@@ -41,7 +44,7 @@ function UserDeviceSidePanel({
           },
         }}
       >
-        <UserDeviceSidePanelContent onClose={onClose} />
+        <UserDeviceSidePanelContent device={device} onClose={onClose} />
       </Drawer>
       <Box
         sx={{
@@ -53,7 +56,7 @@ function UserDeviceSidePanel({
           },
         }}
       >
-        <UserDeviceSidePanelContent />
+        <UserDeviceSidePanelContent device={device} />
       </Box>
     </Box>
   );

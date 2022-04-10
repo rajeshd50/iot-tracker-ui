@@ -7,35 +7,68 @@ import DeviceDashboardWidget, {
   IDeviceDashboardWidgetProps,
 } from "../../../common/components/device/device-dashboard-widget/DeviceDashboardWidget";
 import { ROUTES } from "../../../constants";
+import { Device, DeviceStatus } from "../../../models/device.model";
 
-const devices: IDeviceDashboardWidgetProps[] = [
+const deviceList: Device[] = [
   {
-    title: "Device One",
-    subTitle: "truck1",
-    id: 1,
-    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "1")}`,
-    status: "online",
+    name: "test1",
+    serialNumber: "0001",
+    model: "tracker",
+    _id: "1",
+    isActive: true,
+    details: {
+      status: DeviceStatus.online,
+    },
   },
   {
-    title: "Device Two",
-    subTitle: "truck2",
-    id: 2,
-    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "2")}`,
-    status: "offline",
+    name: "test2",
+    serialNumber: "0002",
+    model: "tracker",
+    _id: "2",
+    isActive: true,
+    details: {
+      status: DeviceStatus.critical,
+    },
   },
   {
-    title: "Device Three",
-    subTitle: "truck3",
-    id: 3,
-    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "3")}`,
-    status: "online",
+    name: "test3",
+    serialNumber: "0003",
+    model: "tracker",
+    _id: "3",
+    isActive: true,
+    details: {
+      status: DeviceStatus.online,
+    },
   },
   {
-    title: "Device Four",
-    subTitle: "truck4",
-    id: 4,
-    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "4")}`,
-    status: "warning",
+    name: "test4",
+    serialNumber: "0004",
+    model: "tracker",
+    _id: "4",
+    isActive: true,
+    details: {
+      status: DeviceStatus.warning,
+    },
+  },
+  {
+    name: "test5",
+    serialNumber: "0005",
+    model: "tracker",
+    _id: "5",
+    isActive: false,
+    details: {
+      status: DeviceStatus.online,
+    },
+  },
+  {
+    name: "test6",
+    serialNumber: "0006",
+    model: "tracker",
+    _id: "6",
+    isActive: true,
+    details: {
+      status: DeviceStatus.offline,
+    },
   },
 ];
 
@@ -71,9 +104,12 @@ function UserDashboard() {
             </Button>
           </Box>
         </Grid>
-        {devices.map((device) => (
-          <Grid item xs={12} sm={6} md={4} key={device.id}>
-            <DeviceDashboardWidget {...device} />
+        {deviceList.map((device) => (
+          <Grid item xs={12} sm={6} md={4} key={device._id}>
+            <DeviceDashboardWidget
+              device={device}
+              link={ROUTES.USER.DEVICE_DETAILS.replace(":id", device._id)}
+            />
           </Grid>
         ))}
       </Grid>

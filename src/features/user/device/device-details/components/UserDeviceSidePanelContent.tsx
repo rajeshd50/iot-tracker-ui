@@ -5,23 +5,22 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import DeviceDetailsWidget from "../../../../../common/components/device/device-details-widget/DeviceDetailsWidget";
+import { Device } from "../../../../../models/device.model";
 
 export interface IUserDeviceSidePanelContentProps {
   onClose?: () => void;
+  device: Device;
 }
 
 function UserDeviceSidePanelContent({
   onClose,
+  device,
 }: IUserDeviceSidePanelContentProps) {
   const [startDate, setStartDate] = React.useState<Date | null>(new Date());
   const [endDate, setEndDate] = React.useState<Date | null>(new Date());
   return (
     <Box>
-      <DeviceDetailsWidget
-        title="Device One"
-        subTitle="truck1"
-        status="online"
-      />
+      <DeviceDetailsWidget device={device} />
       <Grid
         container
         spacing={2}
