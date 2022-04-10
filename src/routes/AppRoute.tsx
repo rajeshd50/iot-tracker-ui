@@ -18,7 +18,6 @@ import UserProfileLoadable from "../features/common/profile/UserProfileLoadable"
 import withNoAuthHoc from "../hoc/auth/AppNoAuthHoc";
 import withAuthHoc from "../hoc/auth/AppAuthHoc";
 import { ROLE_TYPES } from "../constants/role.constants";
-import { Counter } from "../features/counter/Counter";
 import UserDeviceListLoadable from "../features/user/device/device-list/UserDeviceListLoadable";
 
 function AppRoute() {

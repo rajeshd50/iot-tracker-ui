@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  alpha,
-  AppBar,
-  Box,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { alpha, AppBar, Box, IconButton, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";

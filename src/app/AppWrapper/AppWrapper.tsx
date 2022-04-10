@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
 
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useAppSelector } from "../../store/hooks";
 import { selectAppDrawerWidth } from "../reducers/appWrapperSlice";
 import AppHeader from "../AppHeader/AppHeader";
 import AppSideBar from "../AppSideBar/AppSideBar";
@@ -10,7 +10,6 @@ const headerHeight = 64;
 
 function AppWrapper({ children }: React.PropsWithChildren<any>) {
   const drawerWidth = useAppSelector(selectAppDrawerWidth);
-  const dispatch = useAppDispatch();
   return (
     <Box sx={{ display: "flex" }}>
       <AppHeader />
