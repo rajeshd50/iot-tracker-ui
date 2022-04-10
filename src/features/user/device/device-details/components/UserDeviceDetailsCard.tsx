@@ -1,4 +1,4 @@
-import { alpha, Box, Chip, Grid, Typography } from "@mui/material";
+import { alpha, Box, Grid, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
 import DeviceStatusChip from "../../../../../common/components/device/device-status-chip/DeviceStatusChip";

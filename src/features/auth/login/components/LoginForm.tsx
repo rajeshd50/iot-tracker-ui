@@ -18,14 +18,14 @@ import { setLoggedIn } from "../../../common/reducers/userSlice";
 
 const adminUser: User = {
   _id: "1",
-  name: "Rajesh Dan",
+  name: "Satya Paul",
   email: "admin@gmail.com",
   role: "admin",
 };
 
 const userUser: User = {
   _id: "2",
-  name: "Rajesh User",
+  name: "Satya Paul",
   email: "user@gmail.com",
   role: "user",
 };

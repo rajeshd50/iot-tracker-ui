@@ -3,9 +3,7 @@ import { grey } from "@mui/material/colors";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import UserWelcome from "../../../common/components/dashboard/user-welcome/UserWelcome";
-import DeviceDashboardWidget, {
-  IDeviceDashboardWidgetProps,
-} from "../../../common/components/device/device-dashboard-widget/DeviceDashboardWidget";
+import DeviceDashboardWidget from "../../../common/components/device/device-dashboard-widget/DeviceDashboardWidget";
 import { ROUTES } from "../../../constants";
 import { Device, DeviceStatus } from "../../../models/device.model";
 
