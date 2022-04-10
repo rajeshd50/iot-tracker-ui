@@ -1,4 +1,4 @@
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import React from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -6,7 +6,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import DeviceDetailsWidget from "../../../../../common/components/device/device-details-widget/DeviceDetailsWidget";
 
-function UserDeviceSidePanelContent() {
+export interface IUserDeviceSidePanelContentProps {
+  onClose?: () => void;
+}
+
+function UserDeviceSidePanelContent({
+  onClose,
+}: IUserDeviceSidePanelContentProps) {
   const [startDate, setStartDate] = React.useState<Date | null>(new Date());
   const [endDate, setEndDate] = React.useState<Date | null>(new Date());
   return (
@@ -55,6 +61,28 @@ function UserDeviceSidePanelContent() {
           </Grid>
         </LocalizationProvider>
       </Grid>
+      <Box
+        sx={{
+          display: {
+            xs: "flex",
+            sm: "flex",
+            md: "none",
+          },
+          padding: "10px",
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+        }}
+      >
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          onClick={onClose}
+        >
+          Close
+        </Button>
+      </Box>
     </Box>
   );
 }

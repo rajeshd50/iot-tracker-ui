@@ -72,7 +72,7 @@ function UserDashboard() {
           </Box>
         </Grid>
         {devices.map((device) => (
-          <Grid item xs={6} sm={4} key={device.id}>
+          <Grid item xs={12} sm={6} md={4} key={device.id}>
             <DeviceDashboardWidget {...device} />
           </Grid>
         ))}

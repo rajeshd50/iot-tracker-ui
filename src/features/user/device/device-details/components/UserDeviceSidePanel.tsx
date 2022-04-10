@@ -41,7 +41,7 @@ function UserDeviceSidePanel({
           },
         }}
       >
-        <UserDeviceSidePanelContent />
+        <UserDeviceSidePanelContent onClose={onClose} />
       </Drawer>
       <Box
         sx={{
