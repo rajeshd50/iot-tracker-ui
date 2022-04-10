@@ -106,7 +106,7 @@ function LoginForm() {
           />
         </Grid>
         <Grid item xs={12} textAlign="right">
-          <Link component={RouterLink} to={ROUTES.USER.DASHBOARD}>
+          <Link component={RouterLink} to={ROUTES.AUTH.FORGOT_PASSWORD}>
             Forgot password?
           </Link>
         </Grid>
