@@ -18,6 +18,7 @@ export const ROUTES = {
   },
   USER: {
     DASHBOARD: "/dashboard",
+    DEVICE_LIST: "/devices",
     DEVICE_DETAILS: "/device/details/:id",
   },
 };

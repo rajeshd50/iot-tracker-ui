@@ -1,22 +1,40 @@
-import { Logout, PersonAdd, Settings } from "@mui/icons-material";
+import { Logout, Settings } from "@mui/icons-material";
 import {
+  Box,
   Divider,
   IconButton,
   ListItemIcon,
   Menu,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../../../constants";
 import UserBadge from "../user-badge/UserBadge";
+import CachedIcon from "@mui/icons-material/Cached";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import {
+  selectUserDetails,
+  setLoggedOut,
+} from "../../../../features/common/reducers/userSlice";
+import { User } from "../../../../models";
 
 function UserMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const userDetails: User = useAppSelector(selectUserDetails);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const onLogout = async () => {
+    dispatch(setLoggedOut());
+    navigate(ROUTES.AUTH.LOGIN);
   };
   return (
     <>
@@ -65,22 +83,28 @@ function UserMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>Profile</MenuItem>
-        <MenuItem>My account</MenuItem>
+        <Box
+          sx={{
+            padding: "1rem",
+          }}
+        >
+          <Typography variant="subtitle1">{userDetails.email}</Typography>
+          <Typography variant="subtitle2">{userDetails.name}</Typography>
+        </Box>
         <Divider />
-        <MenuItem>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => navigate(ROUTES.COMMON.PROFILE)}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
-          Settings
+          Profile
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => navigate(ROUTES.COMMON.CHANGE_PASSWORD)}>
+          <ListItemIcon>
+            <CachedIcon fontSize="small" />
+          </ListItemIcon>
+          Change password
+        </MenuItem>
+        <MenuItem onClick={() => onLogout()}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

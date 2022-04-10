@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
+import { StyledEngineProvider } from "@mui/material/styles";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -20,7 +21,9 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <App />
+          <StyledEngineProvider injectFirst>
+            <App />
+          </StyledEngineProvider>
         </BrowserRouter>
       </PersistGate>
     </Provider>

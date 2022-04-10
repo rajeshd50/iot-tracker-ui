@@ -1,15 +1,18 @@
-import React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
+import React from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
+import { SnackbarProvider } from "notistack";
 
-import theme from '../theme/default/default';
-import AppRoute from '../routes/AppRoute';
+import theme from "../theme/default/default";
+import AppRoute from "../routes/AppRoute";
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppRoute />
+      <SnackbarProvider maxSnack={3}>
+        <AppRoute />
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

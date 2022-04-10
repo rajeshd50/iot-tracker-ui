@@ -1,17 +1,83 @@
+import { Box, Button, Grid, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import UserWelcome from "../../../common/components/dashboard/user-welcome/UserWelcome";
+import DeviceDashboardWidget, {
+  IDeviceDashboardWidgetProps,
+} from "../../../common/components/device/device-dashboard-widget/DeviceDashboardWidget";
+import { ROUTES } from "../../../constants";
 
-const text =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel tincidunt orci. Integer quis erat nulla. Praesent accumsan tempor lacus in porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed ac erat pulvinar, condimentum justo ac, hendrerit justo. Nulla iaculis tempus bibendum. Fusce a quam eu ipsum sagittis auctor ac nec felis. Duis pretium egestas sem, non suscipit nulla maximus rhoncus. Ut sed blandit nisi. Vestibulum scelerisque libero ut ex egestas convallis.";
-
-const items = new Array(10).fill(1).map((_, i) => i);
+const devices: IDeviceDashboardWidgetProps[] = [
+  {
+    title: "Device One",
+    subTitle: "truck1",
+    id: 1,
+    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "1")}`,
+    status: "online",
+  },
+  {
+    title: "Device Two",
+    subTitle: "truck2",
+    id: 2,
+    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "2")}`,
+    status: "offline",
+  },
+  {
+    title: "Device Three",
+    subTitle: "truck3",
+    id: 3,
+    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "3")}`,
+    status: "online",
+  },
+  {
+    title: "Device Four",
+    subTitle: "truck4",
+    id: 4,
+    link: `${ROUTES.USER.DEVICE_DETAILS.replace(":id", "4")}`,
+    status: "warning",
+  },
+];
 
 function UserDashboard() {
+  const navigate = useNavigate();
   return (
-    <div>
-      {items.map((item) => (
-        <p key={item}>{text}</p>
-      ))}
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+      }}
+    >
+      <UserWelcome />
+      <Grid container spacing={2} mt={2}>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: `1px solid ${grey[400]}`,
+              paddingBottom: "16px",
+            }}
+          >
+            <Typography variant="h5">Devices</Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate(ROUTES.USER.DEVICE_LIST)}
+            >
+              View all
+            </Button>
+          </Box>
+        </Grid>
+        {devices.map((device) => (
+          <Grid item xs={6} sm={4} key={device.id}>
+            <DeviceDashboardWidget {...device} />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 }
 

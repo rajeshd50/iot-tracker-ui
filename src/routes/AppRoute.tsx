@@ -19,6 +19,7 @@ import withNoAuthHoc from "../hoc/auth/AppNoAuthHoc";
 import withAuthHoc from "../hoc/auth/AppAuthHoc";
 import { ROLE_TYPES } from "../constants/role.constants";
 import { Counter } from "../features/counter/Counter";
+import UserDeviceListLoadable from "../features/user/device/device-list/UserDeviceListLoadable";
 
 function AppRoute() {
   return (
@@ -67,6 +68,10 @@ function AppRoute() {
       <Route
         path={ROUTES.USER.DASHBOARD}
         element={withAuthHoc(UserDashboardLoadable, ROLE_TYPES.USER)}
+      />
+      <Route
+        path={ROUTES.USER.DEVICE_LIST}
+        element={withAuthHoc(UserDeviceListLoadable, ROLE_TYPES.USER)}
       />
       <Route
         path={ROUTES.USER.DEVICE_DETAILS}

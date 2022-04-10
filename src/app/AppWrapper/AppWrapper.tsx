@@ -24,6 +24,8 @@ function AppWrapper({ children }: React.PropsWithChildren<any>) {
             md: `calc(100% - ${drawerWidth}px)`,
           },
           marginTop: `${headerHeight}px`,
+          display: "flex",
+          minHeight: `calc(100vh - 64px)`,
         }}
       >
         {children}
