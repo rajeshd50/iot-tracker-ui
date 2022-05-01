@@ -10,72 +10,71 @@ import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 import { ROUTES } from "../../../../constants";
 import { User } from "../../../../models";
 import styles from "./LoginForm.module.scss";
 import { useAppDispatch } from "../../../../store/hooks";
-import { setLoggedIn } from "../../../common/reducers/userSlice";
+import { setLoggedIn } from "../../../../store/reducers/userSlice";
+import { LoginData, UserService } from "../../../../services/user.service";
 
-const adminUser: User = {
-  _id: "1",
-  name: "Satya Paul",
-  email: "admin@gmail.com",
-  role: "admin",
-};
-
-const userUser: User = {
-  _id: "2",
-  name: "Satya Paul",
-  email: "user@gmail.com",
-  role: "user",
-};
-
-const DEFAULT_PASSWORD = "password";
+const loginSchema = yup
+  .object({
+    email: yup
+      .string()
+      .email("Please enter a valid email")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(4, "Password must have minimum 4 characters")
+      .required("Password is required"),
+  })
+  .required();
 
 function LoginForm() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginData>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: yupResolver(loginSchema),
+  });
   const [isLoginLoading, setIsLoginLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();
 
-  const waitForFewTime = (n: number = 2000) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(true), n);
-    });
-  };
-
-  const onLoginClick = async () => {
+  const onLoginSubmit = async (data: LoginData) => {
     setIsLoginLoading(true);
-    await waitForFewTime();
-    let user: User | null = null;
-    if (email === adminUser.email && password === DEFAULT_PASSWORD) {
-      user = adminUser;
-    } else if (email === userUser.email && password === DEFAULT_PASSWORD) {
-      user = userUser;
-    }
-    if (!user) {
+    try {
+      const loginResponse = await UserService.login(data);
+      dispatch(
+        setLoggedIn({
+          userDetails: loginResponse.user,
+          token: loginResponse.accessToken,
+        })
+      );
+      if (loginResponse.user.role === "admin") {
+        navigate(ROUTES.ADMIN.DASHBOARD, {
+          replace: true,
+        });
+      } else {
+        navigate(ROUTES.USER.DASHBOARD, {
+          replace: true,
+        });
+      }
+    } catch (e) {
       enqueueSnackbar("Invalid email/password", {
         variant: "error",
       });
       setIsLoginLoading(false);
-      return;
-    }
-
-    dispatch(
-      setLoggedIn({
-        userDetails: user,
-        token: "xyz",
-      })
-    );
-    await waitForFewTime(500);
-    setIsLoginLoading(false);
-
-    if (user.role === "admin") {
-      navigate(ROUTES.ADMIN.DASHBOARD);
-    } else {
-      navigate(ROUTES.USER.DASHBOARD);
     }
   };
 
@@ -85,24 +84,41 @@ function LoginForm() {
       noValidate
       autoComplete="off"
       className={styles.LoginFormContainer}
+      onSubmit={handleSubmit(onLoginSubmit)}
     >
       <Grid container spacing={1}>
         <Grid item xs={12} mb={1}>
-          <TextField
-            type="email"
-            placeholder="Email address"
-            label="Email address"
-            disabled={isLoginLoading}
-            onChange={(e) => setEmail(e.target.value)}
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                type="email"
+                placeholder="Email address"
+                label="Email address"
+                disabled={isLoginLoading}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                {...field}
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12} mb={1}>
-          <TextField
-            type="password"
-            placeholder="Password"
-            label="Password"
-            disabled={isLoginLoading}
-            onChange={(e) => setPassword(e.target.value)}
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                type="password"
+                placeholder="Password"
+                label="Password"
+                disabled={isLoginLoading}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+                {...field}
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12} textAlign="right">
@@ -115,8 +131,8 @@ function LoginForm() {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={onLoginClick}
-            disabled={isLoginLoading || !email || !password}
+            type="submit"
+            disabled={isLoginLoading}
           >
             {isLoginLoading && (
               <CircularProgress

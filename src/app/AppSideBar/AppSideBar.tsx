@@ -36,8 +36,9 @@ import AppImage from "../../common/components/system/AppImage/AppImage";
 import styles from "./AppSideBar.module.scss";
 import UserBadgeWithDescription from "../../common/components/user/user-badge/UserBadgeWithDescription";
 import UserBadge from "../../common/components/user/user-badge/UserBadge";
-import { ROUTES, TEMP_IS_ADMIN } from "../../constants";
+import { ROUTES } from "../../constants";
 import AppSideBarLink from "./components/AppSideBarLink";
+import { selectIsUserAdmin } from "../../store/reducers/userSlice";
 
 export const MINI_DRAWER_WIDTH = 64;
 export const FULL_DRAWER_WIDTH = 240;
@@ -62,7 +63,7 @@ function AppDrawerComponent({
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const theme = useTheme();
-  const isAdmin = TEMP_IS_ADMIN;
+  const isAdmin = useAppSelector(selectIsUserAdmin);
   const getUserBadge = () => {
     if (!isMini || isHovering || isMobile) {
       return <UserBadgeWithDescription />;

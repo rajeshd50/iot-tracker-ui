@@ -11,6 +11,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import localStorage from "redux-persist/lib/storage";
+import { injectStore } from "../services/base-api";
 
 import makeRootReducer from "./reducers";
 
@@ -31,6 +32,8 @@ export const store = configureStore({
       },
     }),
 });
+
+injectStore(store);
 
 export const persistor = persistStore(store);
 

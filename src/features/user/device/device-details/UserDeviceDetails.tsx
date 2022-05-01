@@ -11,7 +11,7 @@ const deviceDetails: Device = {
   name: "test1",
   serialNumber: "0001",
   model: "tracker",
-  _id: "1",
+  id: "1",
   isActive: true,
   details: {
     status: DeviceStatus.online,

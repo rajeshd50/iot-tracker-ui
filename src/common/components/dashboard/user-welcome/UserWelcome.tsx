@@ -1,8 +1,8 @@
 import { Paper, Typography, useTheme, Box } from "@mui/material";
 import React from "react";
-import { selectUserDetails } from "../../../../features/common/reducers/userSlice";
 import { User } from "../../../../models";
 import { useAppSelector } from "../../../../store/hooks";
+import { selectUserDetails } from "../../../../store/reducers/userSlice";
 import AppImage from "../../system/AppImage/AppImage";
 
 function UserWelcome() {
@@ -34,7 +34,7 @@ function UserWelcome() {
           }}
         >
           <Typography variant="h4">Welcome back</Typography>
-          <Typography variant="h5">{userDetails.name}</Typography>
+          <Typography variant="h5">{userDetails.fullName}</Typography>
         </Box>
         <Box
           sx={{

@@ -1,14 +1,17 @@
 import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
-import { selectUserDetails } from "../../../../features/common/reducers/userSlice";
 import { User } from "../../../../models";
 import { useAppSelector } from "../../../../store/hooks";
+import { selectUserDetails } from "../../../../store/reducers/userSlice";
 import UserBadge from "./UserBadge";
 
 import styles from "./UserBadgeWithDescription.module.scss";
 
 function UserBadgeWithDescription() {
   const userDetails: User = useAppSelector(selectUserDetails);
+  if (!userDetails) {
+    return null;
+  }
   return (
     <Paper
       elevation={0}
@@ -22,7 +25,7 @@ function UserBadgeWithDescription() {
           <UserBadge />
         </Box>
         <Box className={styles.SidePanelUserInfoDescription}>
-          <Typography variant="h6">{userDetails.name}</Typography>
+          <Typography variant="h6">{userDetails.fullName}</Typography>
           <Typography variant="subtitle1">{userDetails.role}</Typography>
         </Box>
       </Box>

@@ -14,11 +14,9 @@ import { ROUTES } from "../../../../constants";
 import UserBadge from "../user-badge/UserBadge";
 import CachedIcon from "@mui/icons-material/Cached";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import {
-  selectUserDetails,
-  setLoggedOut,
-} from "../../../../features/common/reducers/userSlice";
+
 import { User } from "../../../../models";
+import { selectUserDetails, setLoggedOut } from "../../../../store/reducers/userSlice";
 
 function UserMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -36,6 +34,9 @@ function UserMenu() {
     dispatch(setLoggedOut());
     navigate(ROUTES.AUTH.LOGIN);
   };
+  if (!userDetails) {
+    return null;
+  }
   return (
     <>
       <IconButton
@@ -89,7 +90,7 @@ function UserMenu() {
           }}
         >
           <Typography variant="subtitle1">{userDetails.email}</Typography>
-          <Typography variant="subtitle2">{userDetails.name}</Typography>
+          <Typography variant="subtitle2">{userDetails.fullName}</Typography>
         </Box>
         <Divider />
         <MenuItem onClick={() => navigate(ROUTES.COMMON.PROFILE)}>

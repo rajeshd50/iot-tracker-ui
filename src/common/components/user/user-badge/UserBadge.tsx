@@ -1,15 +1,15 @@
 import { Avatar, Typography } from "@mui/material";
 import { useTheme } from "@mui/system";
 import React from "react";
-import { selectUserDetails } from "../../../../features/common/reducers/userSlice";
 import { User } from "../../../../models";
 import { useAppSelector } from "../../../../store/hooks";
+import { selectUserDetails } from "../../../../store/reducers/userSlice";
 
 function UserBadge() {
   const theme = useTheme();
   const userDetails: User = useAppSelector(selectUserDetails);
   const getInitials = () => {
-    return userDetails.name
+    return userDetails.fullName
       .split(" ")
       .map((x) => x.charAt(0))
       .join("")

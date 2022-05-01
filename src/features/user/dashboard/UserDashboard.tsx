@@ -12,7 +12,7 @@ const deviceList: Device[] = [
     name: "test1",
     serialNumber: "0001",
     model: "tracker",
-    _id: "1",
+    id: "1",
     isActive: true,
     details: {
       status: DeviceStatus.online,
@@ -22,7 +22,7 @@ const deviceList: Device[] = [
     name: "test2",
     serialNumber: "0002",
     model: "tracker",
-    _id: "2",
+    id: "2",
     isActive: true,
     details: {
       status: DeviceStatus.critical,
@@ -32,7 +32,7 @@ const deviceList: Device[] = [
     name: "test3",
     serialNumber: "0003",
     model: "tracker",
-    _id: "3",
+    id: "3",
     isActive: true,
     details: {
       status: DeviceStatus.online,
@@ -42,7 +42,7 @@ const deviceList: Device[] = [
     name: "test4",
     serialNumber: "0004",
     model: "tracker",
-    _id: "4",
+    id: "4",
     isActive: true,
     details: {
       status: DeviceStatus.warning,
@@ -52,7 +52,7 @@ const deviceList: Device[] = [
     name: "test5",
     serialNumber: "0005",
     model: "tracker",
-    _id: "5",
+    id: "5",
     isActive: false,
     details: {
       status: DeviceStatus.online,
@@ -62,7 +62,7 @@ const deviceList: Device[] = [
     name: "test6",
     serialNumber: "0006",
     model: "tracker",
-    _id: "6",
+    id: "6",
     isActive: true,
     details: {
       status: DeviceStatus.offline,
@@ -103,10 +103,10 @@ function UserDashboard() {
           </Box>
         </Grid>
         {deviceList.map((device) => (
-          <Grid item xs={12} sm={6} md={4} key={device._id}>
+          <Grid item xs={12} sm={6} md={4} key={device.id}>
             <DeviceDashboardWidget
               device={device}
-              link={ROUTES.USER.DEVICE_DETAILS.replace(":id", device._id)}
+              link={ROUTES.USER.DEVICE_DETAILS.replace(":id", device.id)}
             />
           </Grid>
         ))}

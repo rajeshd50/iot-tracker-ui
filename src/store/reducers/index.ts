@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
 
 import appWrapperSlice from "../../app/reducers/appWrapperSlice";
-import userSlice from "../../features/common/reducers/userSlice";
 import counterReducer from "../../features/counter/reducers/counterSlice";
+import userSlice from "./userSlice";
 
 export default function makeRootReducer() {
   return combineReducers({
