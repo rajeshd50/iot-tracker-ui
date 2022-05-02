@@ -146,6 +146,26 @@ function LoginForm() {
             Login
           </Button>
         </Grid>
+        <Grid item xs={12} mt={1}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} textAlign="center" my={1}>
+              Dont have an account?
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                type="button"
+                onClick={() => {
+                  navigate(ROUTES.AUTH.REGISTER);
+                }}
+              >
+                Register
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     </Box>
   );

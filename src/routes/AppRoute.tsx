@@ -19,6 +19,8 @@ import withNoAuthHoc from "../hoc/auth/AppNoAuthHoc";
 import withAuthHoc from "../hoc/auth/AppAuthHoc";
 import { ROLE_TYPES } from "../constants/role.constants";
 import UserDeviceListLoadable from "../features/user/device/device-list/UserDeviceListLoadable";
+import RegisterLoadable from "../features/auth/register/RegisterLoadable";
+import VerifyEmailLoadable from "../features/auth/verify-email/VerifyEmailLoadable";
 
 function AppRoute() {
   return (
@@ -30,12 +32,20 @@ function AppRoute() {
       />
       <Route path={ROUTES.AUTH.LOGIN} element={withNoAuthHoc(LoginLoadable)} />
       <Route
+        path={ROUTES.AUTH.REGISTER}
+        element={withNoAuthHoc(RegisterLoadable)}
+      />
+      <Route
         path={ROUTES.AUTH.FORGOT_PASSWORD}
         element={withNoAuthHoc(ForgetPasswordLoadable)}
       />
       <Route
         path={ROUTES.AUTH.RESET_PASSWORD}
         element={withNoAuthHoc(ResetPasswordLoadable)}
+      />
+      <Route
+        path={ROUTES.AUTH.VERIFY_EMAIL}
+        element={<VerifyEmailLoadable />}
       />
       {/* with auth routes */}
       <Route

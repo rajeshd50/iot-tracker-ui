@@ -1,10 +1,10 @@
-.LoginContainer {
+.AuthPageContainer {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
 
-  .LoginSection {
+  .AuthPageSection {
     margin: 0 auto;
     max-width: 80%;
     padding: 15px;
@@ -21,7 +21,7 @@
       padding: 30px;
     }
 
-    .LoginHeaderSection {
+    .AuthPageHeaderSection {
       display: flex;
       align-items: center;
       justify-content: space-between;
