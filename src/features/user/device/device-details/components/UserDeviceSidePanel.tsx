@@ -44,7 +44,11 @@ function UserDeviceSidePanel({
           },
         }}
       >
-        <UserDeviceSidePanelContent device={device} onClose={onClose} />
+        <UserDeviceSidePanelContent
+          isMobile
+          device={device}
+          onClose={onClose}
+        />
       </Drawer>
       <Box
         sx={{

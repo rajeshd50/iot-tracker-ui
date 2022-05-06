@@ -2,10 +2,8 @@ import React from "react";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 
-import { SvgIconProps } from "@mui/material";
+import { SvgIconProps, Tooltip } from "@mui/material";
 import { DeviceStatus } from "../../../../models/device.model";
 
 export interface IDeviceStatusIconProps extends SvgIconProps {
@@ -14,20 +12,18 @@ export interface IDeviceStatusIconProps extends SvgIconProps {
 
 function DeviceStatusIcon({ status, ...svgProps }: IDeviceStatusIconProps) {
   switch (status) {
-    case DeviceStatus.online:
-      return <CheckCircleIcon color="primary" fontSize="large" {...svgProps} />;
-    case DeviceStatus.offline:
-      return <CancelIcon color="disabled" fontSize="large" {...svgProps} />;
-    case DeviceStatus.warning:
+    case DeviceStatus.ACTIVE:
       return (
-        <ReportGmailerrorredIcon
-          color="warning"
-          fontSize="large"
-          {...svgProps}
-        />
+        <Tooltip title="Active">
+          <CheckCircleIcon color="primary" fontSize="large" {...svgProps} />
+        </Tooltip>
       );
-    case DeviceStatus.critical:
-      return <ErrorOutlineIcon color="error" fontSize="large" {...svgProps} />;
+    case DeviceStatus.INACTIVE:
+      return (
+        <Tooltip title="Inactive">
+          <CancelIcon color="disabled" fontSize="large" {...svgProps} />
+        </Tooltip>
+      );
     default:
       return (
         <CheckCircleIcon color="disabled" fontSize="large" {...svgProps} />

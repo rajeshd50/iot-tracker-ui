@@ -18,14 +18,10 @@ type ChipColor =
 function DeviceStatusChip({ status, chipProps }: IDeviceStatusChipProps) {
   const getChipColor = (): ChipColor => {
     switch (status) {
-      case DeviceStatus.online:
+      case DeviceStatus.ACTIVE:
         return "success";
-      case DeviceStatus.offline:
+      case DeviceStatus.INACTIVE:
         return "default";
-      case DeviceStatus.warning:
-        return "warning";
-      case DeviceStatus.critical:
-        return "error";
       default:
         return "default";
     }

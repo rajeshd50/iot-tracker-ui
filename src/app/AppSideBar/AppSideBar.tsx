@@ -15,13 +15,15 @@ import { Collapse, ListItemButton } from "@mui/material";
 import FormatListBulletedRounded from "@mui/icons-material/FormatListBulletedRounded";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CachedIcon from "@mui/icons-material/Cached";
+import WavesIcon from "@mui/icons-material/Waves";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AddIcon from "@mui/icons-material/Add";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
@@ -126,6 +128,16 @@ function AppDrawerComponent({
               color: theme.palette.primary.dark,
             },
           },
+          ...(isMini && {
+            "& .MuiListSubheader-root": {
+              display: "none",
+            },
+            "& .MuiCollapse-root": {
+              "& .MuiListItemButton-root": {
+                paddingLeft: "16px",
+              },
+            },
+          }),
         }}
       >
         <List>
@@ -158,6 +170,28 @@ function AppDrawerComponent({
           </ListItemButton>
           <Collapse in={deviceMenuOpen} timeout="auto">
             <List component="div" disablePadding>
+              {isAdmin && (
+                <AppSideBarLink
+                  to={ROUTES.ADMIN.DEVICE_POOL}
+                  IconComponent={WavesIcon}
+                  text="Device Pool"
+                  isNested
+                  menuType="device"
+                  isParentActive={deviceMenuOpen}
+                  setActive={setMenuActive}
+                />
+              )}
+              {isAdmin && (
+                <AppSideBarLink
+                  to={ROUTES.ADMIN.RECENT_PURCHASES}
+                  IconComponent={ShoppingCartIcon}
+                  text="Recent Purchases"
+                  isNested
+                  menuType="device"
+                  isParentActive={deviceMenuOpen}
+                  setActive={setMenuActive}
+                />
+              )}
               <AppSideBarLink
                 to={
                   isAdmin ? ROUTES.ADMIN.DEVICE_LIST : ROUTES.USER.DEVICE_LIST
@@ -169,17 +203,17 @@ function AppDrawerComponent({
                 isParentActive={deviceMenuOpen}
                 setActive={setMenuActive}
               />
-              {isAdmin && (
+              {!isAdmin ? (
                 <AppSideBarLink
-                  to={ROUTES.ADMIN.ADD_DEVICE}
-                  IconComponent={PlaylistAddIcon}
+                  to={ROUTES.USER.ADD_NEW_DEVICE}
+                  IconComponent={AddIcon}
                   text="Add device"
                   isNested
                   menuType="device"
                   isParentActive={deviceMenuOpen}
                   setActive={setMenuActive}
                 />
-              )}
+              ) : null}
             </List>
           </Collapse>
         </List>
@@ -247,15 +281,6 @@ function AppDrawerComponent({
                 to={ROUTES.COMMON.PROFILE}
                 IconComponent={SettingsIcon}
                 text="Profile"
-                isNested
-                menuType="account"
-                isParentActive={accountMenuOpen}
-                setActive={setMenuActive}
-              />
-              <AppSideBarLink
-                to={ROUTES.COMMON.CHANGE_PASSWORD}
-                IconComponent={CachedIcon}
-                text="Change Password"
                 isNested
                 menuType="account"
                 isParentActive={accountMenuOpen}

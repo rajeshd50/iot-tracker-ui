@@ -22,21 +22,22 @@ function DeviceViewButton({
 }: IDeviceViewButtonProps) {
   const getButtonColor = (): ButtonColor => {
     switch (status) {
-      case DeviceStatus.online:
+      case DeviceStatus.ACTIVE:
         return "success";
-      case DeviceStatus.offline:
+      case DeviceStatus.INACTIVE:
         return "inherit";
-      case DeviceStatus.warning:
-        return "warning";
-      case DeviceStatus.critical:
-        return "error";
       default:
         return "inherit";
     }
   };
 
   return (
-    <Button color={getButtonColor()} variant="outlined" {...buttonProps}>
+    <Button
+      color={getButtonColor()}
+      disabled={status === DeviceStatus.INACTIVE}
+      variant="outlined"
+      {...buttonProps}
+    >
       {text}
     </Button>
   );

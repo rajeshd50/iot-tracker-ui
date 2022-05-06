@@ -4,18 +4,27 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 import UserDeviceMap from "./components/UserDeviceMap";
 import UserDeviceSidePanel from "./components/UserDeviceSidePanel";
-import { Device, DeviceStatus } from "../../../../models/device.model";
+import {
+  Device,
+  DeviceAssignStatus,
+  DeviceLiveStatus,
+  DeviceStatus,
+} from "../../../../models/device.model";
 import DeviceDetailsWidget from "../../../../common/components/device/device-details-widget/DeviceDetailsWidget";
+import { grey } from "@mui/material/colors";
 
 const deviceDetails: Device = {
-  name: "test1",
-  serialNumber: "0001",
-  model: "tracker",
+  name: "my car",
+  serial: "SN-sdsdsd-fdfdf-23dsf-24dsf",
+  vehicleName: "car one",
+  vehicleNumber: "wb78 23ba 6767",
   id: "1",
-  isActive: true,
-  details: {
-    status: DeviceStatus.online,
-  },
+  status: DeviceStatus.ACTIVE,
+  liveStatus: DeviceLiveStatus.ONLINE,
+  assignStatus: DeviceAssignStatus.ASSIGNED,
+  approvalRequestedAt: "2022-04-12T08:13:55.512Z",
+  approvedAt: "2022-04-12T12:35:55.512Z",
+  lastSeenAt: "2022-05-05T08:13:55.512Z",
 };
 
 function UserDeviceDetails() {
@@ -39,8 +48,10 @@ function UserDeviceDetails() {
           flexDirection: "column",
         }}
       >
-        <DeviceDetailsWidget device={deviceDetails} />
-        <UserDeviceMap />
+        <Box>
+          <DeviceDetailsWidget device={deviceDetails} />
+        </Box>
+        <UserDeviceMap device={deviceDetails} />
       </Box>
       <Fab
         color="primary"
@@ -49,7 +60,7 @@ function UserDeviceDetails() {
         size="medium"
         sx={{
           position: "absolute",
-          top: "1rem",
+          top: "2.7rem",
           right: "0",
           display: {
             xs: "flex",

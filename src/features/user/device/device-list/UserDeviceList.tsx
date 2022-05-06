@@ -1,107 +1,102 @@
-import {
-  alpha,
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { alpha, Box, Button, Pagination } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
 import TablePagination from "@mui/material/TablePagination";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { useSnackbar } from "notistack";
 
-import { Device, DeviceStatus } from "../../../../models/device.model";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
+import {
+  Device,
+  DeviceAssignStatus,
+  DeviceLiveStatus,
+  DeviceStatus,
+} from "../../../../models/device.model";
 import { grey } from "@mui/material/colors";
-import UserDeviceDetailsCard from "../device-details/components/UserDeviceDetailsCard";
+import UserDeviceListFilter from "./components/UserDeviceListFilter";
+import PageHeader from "../../../../common/components/page-header/PageHeader";
+import { ROUTES } from "../../../../constants";
+import { useNavigate } from "react-router-dom";
+import UserDeviceDetailsCardView from "./components/UserDeviceDetailsCardView";
+import UserDeviceDetailsListView from "./components/UserDeviceDetailsListView";
+import UserDeviceLoadingSkelton from "./components/UserDeviceLoadingSkelton";
+import NoDataFallback from "../../../../common/components/no-data-fallback/NoDataFallback";
+import { DeviceService } from "../../../../services";
 
-const deviceList: Device[] = [
-  {
-    name: "test1",
-    serialNumber: "0001",
-    model: "tracker",
-    id: "1",
-    isActive: true,
-    details: {
-      status: DeviceStatus.online,
-    },
-  },
-  {
-    name: "test2",
-    serialNumber: "0002",
-    model: "tracker",
-    id: "2",
-    isActive: true,
-    details: {
-      status: DeviceStatus.critical,
-    },
-  },
-  {
-    name: "test3",
-    serialNumber: "0003",
-    model: "tracker",
-    id: "3",
-    isActive: true,
-    details: {
-      status: DeviceStatus.online,
-    },
-  },
-  {
-    name: "test4",
-    serialNumber: "0004",
-    model: "tracker",
-    id: "4",
-    isActive: true,
-    details: {
-      status: DeviceStatus.warning,
-    },
-  },
-  {
-    name: "test5",
-    serialNumber: "0005",
-    model: "tracker",
-    id: "5",
-    isActive: false,
-    details: {
-      status: DeviceStatus.online,
-    },
-  },
-  {
-    name: "test6",
-    serialNumber: "0006",
-    model: "tracker",
-    id: "6",
-    isActive: true,
-    details: {
-      status: DeviceStatus.offline,
-    },
-  },
-];
+const DEFAULT_PER_PAGE = 10;
 
 function UserDeviceList() {
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = React.useState(1);
+
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [totalDevices, setTotalDevices] = useState(0);
+  const [isDeviceLoading, setIsDeviceLoading] = useState(false);
+
+  const [searchText, setSearchText] = useState("");
+  const [liveStatus, setLiveStatus] = useState<DeviceLiveStatus | string>("");
+  const [deviceStatus, setDeviceStatus] = useState<DeviceStatus | string>("");
+
+  const theme = useTheme();
+  const matchesXS = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const navigate = useNavigate();
+
+  const loadDevices = async () => {
+    try {
+      setIsDeviceLoading(true);
+      const devicePaginatedResp = await DeviceService.fetch({
+        page,
+        perPage: DEFAULT_PER_PAGE,
+        searchText: searchText || undefined,
+        liveStatus: liveStatus || undefined,
+        status: deviceStatus || undefined,
+      });
+      setDevices(devicePaginatedResp.items || []);
+      setTotalDevices(devicePaginatedResp.total);
+    } catch (e: any) {
+      enqueueSnackbar(e && e.message ? e.message : "Unable to fetch devices", {
+        variant: "error",
+      });
+    } finally {
+      setIsDeviceLoading(false);
+    }
+  };
+
+  const loadDevicesCallback = useCallback(async () => {
+    await loadDevices();
+  }, [page, deviceStatus, liveStatus, searchText]);
+
+  useEffect(() => {
+    loadDevicesCallback();
+  }, [page, deviceStatus, liveStatus, searchText, loadDevicesCallback]);
+
+  const onFilterReset = () => {
+    setSearchText("");
+    setLiveStatus("");
+    setDeviceStatus("");
+  };
+
+  const onFilterUpdate = (
+    searchText: string | null,
+    liveStatus: DeviceLiveStatus | string | null,
+    status: DeviceStatus | string | null
+  ) => {
+    setSearchText(searchText || "");
+    setLiveStatus(liveStatus || "");
+    setDeviceStatus(status || "");
+  };
 
   const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
+    event: React.ChangeEvent<unknown> | null,
     newPage: number
   ) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const onDeviceEditClick = (deviceToEdit: Device) => {};
   return (
     <Box
       sx={{
@@ -109,77 +104,37 @@ function UserDeviceList() {
         position: "relative",
       }}
     >
-      <Typography variant="h5">Devices</Typography>
-      <Box
-        sx={{
-          margin: "15px 0",
-        }}
-      >
-        <Accordion
-          elevation={0}
-          sx={{
-            "&.MuiPaper-root": {
-              filter: "drop-shadow(0px 0px 2px rgba(0,0,0,0.32))",
-            },
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="device-filter-content"
-            id="device-filter-header"
-          >
-            <Typography>Filters</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField label="Search by name/id" />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id="status-filter-select-label">
-                      Device Status
-                    </InputLabel>
-                    <Select
-                      labelId="status-filter-select-label"
-                      id="status-filter-select"
-                      value={statusFilter}
-                      label="Device Status"
-                      onChange={(e) => setStatusFilter(e.target.value)}
-                    >
-                      <MenuItem value="all">All</MenuItem>
-                      <MenuItem value="online">Online</MenuItem>
-                      <MenuItem value="offline">Offline</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid xs={12} item>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: {
-                        xs: "space-between",
-                        sm: "space-between",
-                        md: "flex-end",
-                      },
-                      alignItems: "center",
-                      "& .MuiButton-root": {
-                        marginLeft: "30px",
-                      },
-                    }}
-                  >
-                    <Button color="secondary">Reset</Button>
-                    <Button color="primary" variant="contained">
-                      Search
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
+      <PageHeader
+        title="Device"
+        ActionComponent={
+          totalDevices ? (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate(ROUTES.USER.ADD_NEW_DEVICE)}
+                sx={{
+                  minWidth: "160px",
+                }}
+                startIcon={<AddCircleIcon />}
+              >
+                Add New Device
+              </Button>
             </Box>
-          </AccordionDetails>
-        </Accordion>
-      </Box>
+          ) : null
+        }
+      />
+      <UserDeviceListFilter
+        isLoading={isDeviceLoading}
+        onFilterReset={onFilterReset}
+        onFilterUpdate={onFilterUpdate}
+      />
       <Box
         sx={{
           position: "absolute",
@@ -187,15 +142,17 @@ function UserDeviceList() {
           width: "100%",
           padding: "10px",
           backgroundColor: alpha(grey[50], 0.5),
+          display: "flex",
+          justifyContent: "center",
         }}
       >
-        <TablePagination
-          component="div"
-          count={100}
+        <Pagination
+          count={totalDevices}
+          color="primary"
+          showFirstButton
+          showLastButton
           page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          onChange={handleChangePage}
         />
       </Box>
       <Box
@@ -203,9 +160,53 @@ function UserDeviceList() {
           marginBottom: "96px",
         }}
       >
-        {deviceList.map((device) => (
-          <UserDeviceDetailsCard device={device} key={device.id} />
-        ))}
+        {isDeviceLoading ? (
+          <>
+            <UserDeviceLoadingSkelton />
+            <UserDeviceLoadingSkelton />
+            <UserDeviceLoadingSkelton />
+          </>
+        ) : (
+          <>
+            {devices.length ? (
+              <>
+                {devices.map((device) =>
+                  matchesXS ? (
+                    <UserDeviceDetailsCardView
+                      device={device}
+                      key={device.id}
+                      onClickEdit={onDeviceEditClick}
+                    />
+                  ) : (
+                    <UserDeviceDetailsListView
+                      device={device}
+                      key={device.id}
+                      onClickEdit={onDeviceEditClick}
+                    />
+                  )
+                )}
+              </>
+            ) : (
+              <>
+                <NoDataFallback
+                  title={
+                    totalDevices
+                      ? "No device found with selected filters"
+                      : "No devices added yet!"
+                  }
+                  showActionButton={!totalDevices}
+                  actionButtonText="Add new device"
+                  buttonProps={{
+                    startIcon: <AddCircleIcon />,
+                  }}
+                  onActionButtonClick={() => {
+                    navigate(ROUTES.USER.ADD_NEW_DEVICE);
+                  }}
+                />
+              </>
+            )}
+          </>
+        )}
       </Box>
     </Box>
   );

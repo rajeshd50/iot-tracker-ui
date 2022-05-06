@@ -34,6 +34,14 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+axiosInstance.interceptors.response.use(undefined, (error) => {
+  const { status } = error.response;
+  if (status === 401) {
+    store.dispatch(setLoggedOut());
+  }
+  return Promise.resolve(error.response);
+});
+
 export const BaseApi = {
   get: axiosInstance.get,
   post: axiosInstance.post,

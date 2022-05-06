@@ -1,22 +1,34 @@
 import { BaseModel } from "./base.model";
+import { User } from "./user.model";
 
-export enum DeviceStatus {
-  online = "online",
-  offline = "offline",
-  warning = "warning",
-  critical = "critical",
+export enum DeviceLiveStatus {
+  NA = "na",
+  ONLINE = "online",
+  OFFLINE = "offline",
 }
 
-export interface DeviceDetails {
-  status: DeviceStatus;
-  lastSeen?: string;
+export enum DeviceAssignStatus {
+  NOT_ASSIGNED = "not_assigned",
+  PENDING_APPROVAL = "pending_approval",
+  ASSIGNED = "assigned",
+}
+
+export enum DeviceStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
 }
 
 export interface Device extends BaseModel {
-  serialNumber: string;
-  model: string;
-  name: string;
-  isActive: boolean;
-  description?: string;
-  details: DeviceDetails;
+  serial: string;
+  liveStatus: DeviceLiveStatus;
+  assignStatus: DeviceAssignStatus;
+  status: DeviceStatus;
+  user?: User;
+  approvedBy?: User;
+  approvedAt?: string;
+  name?: string;
+  vehicleName?: string;
+  vehicleNumber?: string;
+  approvalRequestedAt?: string;
+  lastSeenAt?: string;
 }

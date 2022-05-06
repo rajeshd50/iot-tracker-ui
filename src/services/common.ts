@@ -11,6 +11,12 @@ export const getErrorMessage = (
     } else if (
       apiResponse.data &&
       apiResponse.data.data &&
+      typeof apiResponse.data.data === "string"
+    ) {
+      errorMessage = apiResponse.data.data;
+    } else if (
+      apiResponse.data &&
+      apiResponse.data.data &&
       apiResponse.data.data.message
     ) {
       errorMessage = apiResponse.data.data.message;
@@ -18,3 +24,8 @@ export const getErrorMessage = (
   }
   return errorMessage;
 };
+
+export enum OrderByDirection {
+  ASCENDING = "asc",
+  DESCENDING = "desc",
+}

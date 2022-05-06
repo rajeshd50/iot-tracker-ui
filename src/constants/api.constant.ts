@@ -14,4 +14,19 @@ export const APIS = {
     FETCH_ALL_USERS: "user/users",
     UPDATE: "user",
   },
+  DEVICE_POOL: {
+    CREATE: "device-pool/create",
+    MARK_CONFIGURED: "device-pool/mark-configured",
+    FETCH: "device-pool/fetch",
+    DELETE: "device-pool/delete",
+  },
+  DEVICE: {
+    REQUEST_ASSIGNMENT: "device/request-assignment",
+    FETCH: "device/fetch",
+    UPDATE: "device/update",
+    UPDATE_APPROVAL: "device/update-approval",
+    UPDATE_STATUS: "device/update-status",
+    DETAILS: "device/details",
+    DELETE: "device/delete",
+  },
 };

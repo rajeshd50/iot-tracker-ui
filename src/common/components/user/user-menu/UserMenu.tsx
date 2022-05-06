@@ -8,7 +8,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../../constants";
 import UserBadge from "../user-badge/UserBadge";
@@ -16,10 +16,16 @@ import CachedIcon from "@mui/icons-material/Cached";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 
 import { User } from "../../../../models";
-import { selectUserDetails, setLoggedOut } from "../../../../store/reducers/userSlice";
+import {
+  selectUserDetails,
+  setLoggedOut,
+} from "../../../../store/reducers/userSlice";
+import ChangePasswordDialog from "../change-password/ChangePassword";
 
 function UserMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -33,6 +39,9 @@ function UserMenu() {
   const onLogout = async () => {
     dispatch(setLoggedOut());
     navigate(ROUTES.AUTH.LOGIN);
+  };
+  const onCloseChangePassword = () => {
+    setShowChangePassword(false);
   };
   if (!userDetails) {
     return null;
@@ -99,7 +108,7 @@ function UserMenu() {
           </ListItemIcon>
           Profile
         </MenuItem>
-        <MenuItem onClick={() => navigate(ROUTES.COMMON.CHANGE_PASSWORD)}>
+        <MenuItem onClick={() => setShowChangePassword(true)}>
           <ListItemIcon>
             <CachedIcon fontSize="small" />
           </ListItemIcon>
@@ -112,6 +121,10 @@ function UserMenu() {
           Logout
         </MenuItem>
       </Menu>
+      <ChangePasswordDialog
+        show={showChangePassword}
+        onCancel={onCloseChangePassword}
+      />
     </>
   );
 }

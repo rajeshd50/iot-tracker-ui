@@ -1,8 +1,8 @@
 import loadable from "@loadable/component";
 import FullScreenLoader from "../../../../common/pages/full-screen-loader/FullScreenLoader";
 
-const AdminAddDeviceLoadable = loadable(() => import("./AdminAddDevice"), {
+const AdminDevicePoolLoadable = loadable(() => import("./AdminDevicePool"), {
   fallback: <FullScreenLoader />,
 });
 
-export default AdminAddDeviceLoadable;
+export default AdminDevicePoolLoadable;

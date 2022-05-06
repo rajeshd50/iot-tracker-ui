@@ -1,5 +1,5 @@
 import { APIS } from "../constants";
-import { User } from "../models";
+import { PaginatedResponse, User } from "../models";
 import { BaseApi } from "./base-api";
 import { getErrorMessage } from "./common";
 
@@ -41,6 +41,18 @@ export interface VerifyEmailData {
 
 export interface SendEmailVerificationMailData {
   email: string;
+}
+
+export interface ChangePasswordDto {
+  oldPassword: string;
+  newPassword: string;
+  retypeNewPassword: string;
+}
+
+export interface FetchUsersDto {
+  searchText?: string;
+  page: number;
+  perPage: number;
 }
 
 const login = async ({ email, password }: LoginData) => {
@@ -122,19 +134,20 @@ const profile = async () => {
   }
 };
 
-const fetchAllUsers = async () => {
+const fetchAllUsers = async (filter: FetchUsersDto) => {
   try {
-    const allUsersResponse = await BaseApi.get(APIS.USER.FETCH_ALL_USERS);
+    const allUsersResponse = await BaseApi.post(
+      APIS.USER.FETCH_ALL_USERS,
+      filter
+    );
     if (
       allUsersResponse &&
       allUsersResponse.status === 200 &&
       allUsersResponse.data.data
     ) {
-      const users: User[] = allUsersResponse.data.data.users;
+      const result: PaginatedResponse<User> = allUsersResponse.data.data;
 
-      return {
-        users,
-      };
+      return result;
     }
     throw new Error(
       getErrorMessage(allUsersResponse, "Unable to fetch all users")

@@ -1,61 +1,125 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import React from "react";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import {
+  Box,
+  Button,
+  Grid,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useState } from "react";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import DeviceDetailsWidget from "../../../../../common/components/device/device-details-widget/DeviceDetailsWidget";
 import { Device } from "../../../../../models/device.model";
+import { grey } from "@mui/material/colors";
 
 export interface IUserDeviceSidePanelContentProps {
   onClose?: () => void;
   device: Device;
+  isMobile?: boolean;
 }
 
 function UserDeviceSidePanelContent({
   onClose,
   device,
+  isMobile = false,
 }: IUserDeviceSidePanelContentProps) {
-  const [startDate, setStartDate] = React.useState<Date | null>(new Date());
-  const [endDate, setEndDate] = React.useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [liveData, setLiveData] = useState(true);
+
   return (
-    <Box>
-      <DeviceDetailsWidget device={device} />
+    <Box
+      sx={{
+        borderLeft: !isMobile ? `1px solid ${grey[200]}` : "none",
+      }}
+    >
+      {isMobile && (
+        <Box
+          sx={{
+            padding: "10px 15px",
+          }}
+        >
+          <DeviceDetailsWidget isMobile device={device} />
+        </Box>
+      )}
       <Grid
         container
         spacing={2}
         sx={{
-          padding: "30px 10px",
+          padding: "8px 10px",
         }}
       >
         <Grid item xs={12}>
-          <Typography variant="subtitle1">Filters</Typography>
+          <Grid container spacing={1}>
+            <Grid item xs={8}>
+              <Typography variant="h6">Live Data</Typography>
+              <Typography
+                sx={{
+                  color: grey[600],
+                  fontSize: "12px",
+                }}
+              >
+                To filter by date please disable live data
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
+                <Switch
+                  checked={liveData}
+                  onChange={(e, checked) => setLiveData(checked)}
+                  size="small"
+                  inputProps={{
+                    "aria-label": "Live Data Switch",
+                  }}
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: liveData ? grey[500] : grey[800],
+            }}
+          >
+            Filters
+          </Typography>
         </Grid>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Grid item xs={12}>
-            <DatePicker
+            <DateTimePicker
               disableFuture
               label="Start Date"
               openTo="day"
-              views={["year", "month", "day"]}
               value={startDate}
               onChange={(newValue) => {
                 setStartDate(newValue);
               }}
               renderInput={(params) => <TextField {...params} />}
+              disabled={liveData}
             />
           </Grid>
           <Grid item xs={12}>
-            <DatePicker
+            <DateTimePicker
               disableFuture
               label="End Date"
               openTo="day"
-              views={["year", "month", "day"]}
               value={endDate}
               onChange={(newValue) => {
                 setEndDate(newValue);
               }}
               renderInput={(params) => <TextField {...params} />}
+              disabled={liveData}
             />
           </Grid>
         </LocalizationProvider>

@@ -9,11 +9,10 @@ import UserDashboardLoadable from "../features/user/dashboard/UserDashboardLoada
 import AdminDashboardLoadable from "../features/admin/dashboard/AdminDashboardLoadable";
 import AdminUserListLoadable from "../features/admin/users/user-list/AdminUserListLoadable";
 import AdminDeviceListLoadable from "../features/admin/devices/device-list/AdminDeviceListLoadable";
-import AdminAddDeviceLoadable from "../features/admin/devices/add-device/AdminAddDeviceLoadable";
+import AdminDevicePoolLoadable from "../features/admin/devices/device-pool/AdminDevicePoolLoadable";
 import UserDeviceDetailsLoadable from "../features/user/device/device-details/UserDeviceDetailsLoadable";
 import ForgetPasswordLoadable from "../features/auth/forget-password/ForgetPasswordLoadable";
 import ResetPasswordLoadable from "../features/auth/reset-password/ResetPasswordLoadable";
-import UserChangePasswordLoadable from "../features/common/change-password/UserChangePasswordLoadable";
 import UserProfileLoadable from "../features/common/profile/UserProfileLoadable";
 import withNoAuthHoc from "../hoc/auth/AppNoAuthHoc";
 import withAuthHoc from "../hoc/auth/AppAuthHoc";
@@ -21,6 +20,8 @@ import { ROLE_TYPES } from "../constants/role.constants";
 import UserDeviceListLoadable from "../features/user/device/device-list/UserDeviceListLoadable";
 import RegisterLoadable from "../features/auth/register/RegisterLoadable";
 import VerifyEmailLoadable from "../features/auth/verify-email/VerifyEmailLoadable";
+import AdminRecentPurchasesLoadable from "../features/admin/devices/recent-purchases/AdminRecentPurchasesLoadable";
+import UserDeviceAddLoadable from "../features/user/device/device-add/UserDeviceAddLoadable";
 
 function AppRoute() {
   return (
@@ -49,10 +50,6 @@ function AppRoute() {
       />
       {/* with auth routes */}
       <Route
-        path={ROUTES.COMMON.CHANGE_PASSWORD}
-        element={withAuthHoc(UserChangePasswordLoadable)}
-      />
-      <Route
         path={ROUTES.COMMON.PROFILE}
         element={withAuthHoc(UserProfileLoadable)}
       />
@@ -70,8 +67,12 @@ function AppRoute() {
         element={withAuthHoc(AdminDeviceListLoadable, ROLE_TYPES.ADMIN)}
       />
       <Route
-        path={ROUTES.ADMIN.ADD_DEVICE}
-        element={withAuthHoc(AdminAddDeviceLoadable, ROLE_TYPES.ADMIN)}
+        path={ROUTES.ADMIN.DEVICE_POOL}
+        element={withAuthHoc(AdminDevicePoolLoadable, ROLE_TYPES.ADMIN)}
+      />
+      <Route
+        path={ROUTES.ADMIN.RECENT_PURCHASES}
+        element={withAuthHoc(AdminRecentPurchasesLoadable, ROLE_TYPES.ADMIN)}
       />
       {/* user routes */}
       <Route
@@ -85,6 +86,10 @@ function AppRoute() {
       <Route
         path={ROUTES.USER.DEVICE_DETAILS}
         element={withAuthHoc(UserDeviceDetailsLoadable, ROLE_TYPES.USER)}
+      />
+      <Route
+        path={ROUTES.USER.ADD_NEW_DEVICE}
+        element={withAuthHoc(UserDeviceAddLoadable, ROLE_TYPES.USER)}
       />
       {/* not found route */}
       <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
