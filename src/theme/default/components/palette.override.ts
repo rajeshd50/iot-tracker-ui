@@ -2,7 +2,7 @@ import { PaletteOptions } from "@mui/material";
 
 export const PaletteOverRide: PaletteOptions = {
   primary: {
-    main: "#1e90ff",
+    main: "#464EB8",
   },
   secondary: {
     main: "#8e24aa",

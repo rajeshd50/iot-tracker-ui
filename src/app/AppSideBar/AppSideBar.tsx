@@ -9,7 +9,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import DeveloperBoardIcon from "@mui/icons-material/DeveloperBoard";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import ListSubheader from "@mui/material/ListSubheader";
 import { Collapse, ListItemButton } from "@mui/material";
 import FormatListBulletedRounded from "@mui/icons-material/FormatListBulletedRounded";
@@ -20,7 +20,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SettingsIcon from "@mui/icons-material/Settings";
-import CachedIcon from "@mui/icons-material/Cached";
 import WavesIcon from "@mui/icons-material/Waves";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
@@ -43,12 +42,7 @@ import AppSideBarLink from "./components/AppSideBarLink";
 import { selectIsUserAdmin } from "../../store/reducers/userSlice";
 
 export const MINI_DRAWER_WIDTH = 64;
-export const FULL_DRAWER_WIDTH = 240;
-
-const AppToolbar = styled(Toolbar)(({ theme }) => ({
-  paddingLeft: "16px !important",
-  paddingRight: "16px !important",
-}));
+export const FULL_DRAWER_WIDTH = 300;
 
 interface IAppDrawerComponentProps {
   isHovering?: boolean;
@@ -87,13 +81,25 @@ function AppDrawerComponent({
   };
   return (
     <Box component="div" className={styles.AppSideBar}>
-      <AppToolbar>
+      <Toolbar
+        sx={{
+          paddingLeft: "10px !important",
+          paddingRight: "10px !important",
+        }}
+      >
         <Box className={styles.AppSideBarTitle}>
           <Box className={styles.AppSideBarImgContainer}>
             <AppImage src="/icons/android-icon-96x96.png" alt="Logo" />
           </Box>
           {!isMobile && (
-            <IconButton onClick={() => dispatch(setIsMini(!isMini))}>
+            <IconButton
+              sx={{
+                "& .MuiSvgIcon-root": {
+                  color: theme.palette.primary.contrastText,
+                },
+              }}
+              onClick={() => dispatch(setIsMini(!isMini))}
+            >
               {isMini ? (
                 <KeyboardDoubleArrowRightIcon />
               ) : (
@@ -102,42 +108,73 @@ function AppDrawerComponent({
             </IconButton>
           )}
         </Box>
-      </AppToolbar>
+      </Toolbar>
       <Box className={styles.AppSidebarUserInfo}>{getUserBadge()}</Box>
       <Box
         sx={{
           padding: "10px",
           "& .MuiList-root": {
             "& .MuiListSubheader-root": {
+              backgroundColor: "transparent",
               "& .MuiTypography-root": {
                 fontSize: "0.75rem",
                 marginTop: "4px",
                 textTransform: "uppercase",
                 fontWeight: 600,
+                color: theme.palette.primary.contrastText,
               },
             },
           },
           "& .MuiListItemButton-root": {
             borderRadius: "4px",
+            marginTop: "4px",
+            marginBottom: "4px",
+            "& .MuiSvgIcon-root": {
+              color: theme.palette.primary.contrastText,
+            },
+            "& .MuiListItemText-root": {
+              color: theme.palette.primary.contrastText,
+              ...(isMini &&
+                !isHovering && {
+                  height: 0,
+                }),
+            },
+            ...(isMini &&
+              !isHovering && {
+                paddingLeft: "10px",
+              }),
           },
           "& .MuiListItemButton-root.Mui-selected": {
+            backgroundColor: theme.palette.primary.contrastText,
             "& .MuiSvgIcon-root": {
               color: theme.palette.primary.dark,
             },
             "& .MuiListItemText-root": {
               color: theme.palette.primary.dark,
+              ...(isMini &&
+                !isHovering && {
+                  height: 0,
+                }),
+            },
+            "&:hover": {
+              backgroundColor: theme.palette.primary.contrastText,
             },
           },
-          ...(isMini && {
-            "& .MuiListSubheader-root": {
-              display: "none",
-            },
-            "& .MuiCollapse-root": {
-              "& .MuiListItemButton-root": {
-                paddingLeft: "16px",
+          ...(isMini &&
+            !isHovering && {
+              "& .MuiListSubheader-root": {
+                visibility: "hidden",
+                height: "20px",
+                "& .MuiTypography-root": {
+                  display: "none",
+                },
               },
-            },
-          }),
+              "& .MuiCollapse-root": {
+                "& .MuiListItemButton-root": {
+                  paddingLeft: "10px",
+                },
+              },
+            }),
         }}
       >
         <List>
@@ -325,6 +362,7 @@ function AppSideBar() {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
+            backgroundColor: theme.palette.primary.dark,
           },
         }}
       >
@@ -338,6 +376,7 @@ function AppSideBar() {
             boxSizing: "border-box",
             width: isMini ? MINI_DRAWER_WIDTH : drawerWidth,
             borderRightStyle: "dashed",
+            backgroundColor: theme.palette.primary.dark,
             overflowX: "hidden",
             transition: theme.transitions.create("width", {
               easing: theme.transitions.easing.sharp,

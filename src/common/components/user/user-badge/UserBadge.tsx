@@ -1,5 +1,5 @@
 import { Avatar, Typography } from "@mui/material";
-import { useTheme } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
 import { User } from "../../../../models";
 import { useAppSelector } from "../../../../store/hooks";
@@ -24,7 +24,14 @@ function UserBadge() {
       }}
       variant="circular"
     >
-      <Typography variant="h6">{getInitials()}</Typography>
+      <Typography
+        variant="h6"
+        sx={{
+          color: theme.palette.primary.contrastText,
+        }}
+      >
+        {getInitials()}
+      </Typography>
     </Avatar>
   );
 }

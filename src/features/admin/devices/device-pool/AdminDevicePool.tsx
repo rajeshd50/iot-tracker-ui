@@ -24,7 +24,7 @@ const columns: GridColDef[] = [
     field: "serial",
     headerName: "Serial",
     sortable: false,
-    flex: 1,
+    width: 250,
     disableColumnMenu: true,
   },
   {

@@ -1,5 +1,6 @@
 import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
+import { useTheme } from "@mui/material/styles";
 import { User } from "../../../../models";
 import { useAppSelector } from "../../../../store/hooks";
 import { selectUserDetails } from "../../../../store/reducers/userSlice";
@@ -9,6 +10,7 @@ import styles from "./UserBadgeWithDescription.module.scss";
 
 function UserBadgeWithDescription() {
   const userDetails: User = useAppSelector(selectUserDetails);
+  const theme = useTheme();
   if (!userDetails) {
     return null;
   }
@@ -16,8 +18,9 @@ function UserBadgeWithDescription() {
     <Paper
       elevation={0}
       sx={{
-        backgroundColor: "rgba(0,0,0,0.08)",
+        backgroundColor: theme.palette.primary.contrastText,
         borderRadius: "4px",
+        maxHeight: "90px",
       }}
     >
       <Box className={styles.SidePanelUserInfoContainer}>

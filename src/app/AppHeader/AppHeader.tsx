@@ -19,13 +19,14 @@ function AppHeader() {
   const isMini = useAppSelector(selectAppDrawerIsMini);
   const dispatch = useAppDispatch();
   const applicableDrawerWidth = isMini ? MINI_DRAWER_WIDTH : drawerWidth;
+
   return (
     <AppBar
       position="fixed"
       sx={{
         width: { md: `calc(100% - ${applicableDrawerWidth}px)` },
         ml: { md: `${applicableDrawerWidth}px` },
-        backgroundColor: alpha(grey[50], 0.9),
+        backgroundImage: "linear-gradient(to top, #dfe9f3 0%, white 100%)",
         boxShadow: "none",
       }}
     >

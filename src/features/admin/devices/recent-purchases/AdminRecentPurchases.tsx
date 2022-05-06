@@ -21,20 +21,21 @@ import {
 } from "../../../../common/util/util";
 import { OrderByDirection } from "../../../../services/common";
 import DeviceListTable from "../../../../common/components/device/device-list-table/DeviceListTable";
+import ConfirmDialog from "../../../../common/components/confirm-dialog/ConfirmDialog";
 
 const columns: GridColDef[] = [
   {
     field: "serial",
     headerName: "Serial",
     sortable: false,
-    flex: 1,
+    width: 250,
     disableColumnMenu: true,
   },
   {
     field: "approvalRequestedAt",
     headerName: "Date requested",
     sortable: false,
-    flex: 1,
+    flex: 1.5,
     disableColumnMenu: true,
     renderCell: (params: GridRenderCellParams<Device>) => {
       if (!params.row.approvalRequestedAt) {
@@ -57,7 +58,7 @@ const columns: GridColDef[] = [
     field: "user",
     headerName: "User",
     sortable: false,
-    flex: 1,
+    flex: 0.5,
     disableColumnMenu: true,
     renderCell: (params: GridRenderCellParams<Device>) => {
       if (!params.row.user || !params.row.user.fullName) {
@@ -99,9 +100,18 @@ function AdminDeviceRecentPurchaseList() {
   const [perPage, setPerPage] = useState(10);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
 
+  // accept reject variables
+  const [showAcceptRejectConfirm, setShowAcceptRejectConfirm] = useState(false);
+  const [deviceToAcceptReject, setDeviceToAcceptReject] =
+    useState<Device | null>(null);
+  const [isAccept, setIsAccept] = useState<boolean | null>(null);
+  const [isAcceptRejectLoading, setIsAcceptRejectLoading] = useState(false);
+  // accept reject variables ends
+
   const { enqueueSnackbar } = useSnackbar();
 
-  const loadDevicePool = async () => {
+  // core function starts
+  const loadDevices = async () => {
     try {
       setIsSearchLoading(true);
       const devices = await DeviceService.fetch({
@@ -125,14 +135,65 @@ function AdminDeviceRecentPurchaseList() {
   };
 
   const loadDevicesCallback = useCallback(async () => {
-    await loadDevicePool();
+    await loadDevices();
   }, [currentPage, perPage, serial, user]);
 
   useEffect(() => {
     loadDevicesCallback();
   }, [currentPage, perPage, serial, user, loadDevicesCallback]);
 
-  const onAcceptReject = async (device: Device, isAccepted: boolean) => {};
+  // core functions ends
+
+  // accept reject functions starts
+  const onClickAcceptReject = async (device: Device, isAccepted: boolean) => {
+    setIsAccept(isAccepted);
+    setDeviceToAcceptReject(device);
+    setShowAcceptRejectConfirm(true);
+  };
+
+  const onCancelAcceptReject = () => {
+    setIsAccept(null);
+    setDeviceToAcceptReject(null);
+    setShowAcceptRejectConfirm(false);
+  };
+
+  const onConfirmAcceptReject = async () => {
+    if (!deviceToAcceptReject) {
+      return;
+    }
+    try {
+      setIsAcceptRejectLoading(true);
+      await DeviceService.updateApproval({
+        serial: deviceToAcceptReject.serial,
+        isApproved: !!isAccept,
+      });
+      enqueueSnackbar(
+        `Device approval request ${
+          isAccept ? "accepted" : "rejected"
+        } successfully`,
+        {
+          variant: "success",
+        }
+      );
+      loadDevices();
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message
+          ? e.message
+          : `Error while ${
+              isAccept ? "accepting" : "rejecting"
+            } device approval request`,
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setIsAcceptRejectLoading(true);
+      onCancelAcceptReject();
+    }
+  };
+
+  // accept reject functions ends
 
   const getColumns = () => {
     return [
@@ -143,7 +204,7 @@ function AdminDeviceRecentPurchaseList() {
         getActions: (params: GridRowParams) => [
           <GridActionsCellItem
             icon={
-              <Tooltip title="Accept">
+              <Tooltip title="Approve">
                 <CheckCircleIcon
                   color="success"
                   sx={{
@@ -152,8 +213,8 @@ function AdminDeviceRecentPurchaseList() {
                 />
               </Tooltip>
             }
-            onClick={() => onAcceptReject(params.row, true)}
-            label="Accept"
+            onClick={() => onClickAcceptReject(params.row, true)}
+            label="Approve"
           />,
           <GridActionsCellItem
             icon={
@@ -166,8 +227,9 @@ function AdminDeviceRecentPurchaseList() {
                 />
               </Tooltip>
             }
-            onClick={() => onAcceptReject(params.row, false)}
+            onClick={() => onClickAcceptReject(params.row, false)}
             label="Reject"
+            showInMenu
           />,
         ],
       },
@@ -207,6 +269,30 @@ function AdminDeviceRecentPurchaseList() {
         onPageChange={(newPage) => setCurrentPage(newPage)}
         onPerPageChange={(newPerPage) => setPerPage(newPerPage)}
       />
+      {showAcceptRejectConfirm && deviceToAcceptReject ? (
+        <ConfirmDialog
+          title={
+            isAccept === true
+              ? "Confirm device activation approval"
+              : "Confirm device activation rejection"
+          }
+          subTitle={
+            isAccept === true
+              ? `Device (serial: ${deviceToAcceptReject.serial}) will be active and user (${deviceToAcceptReject.user?.fullName}) will be able to access the data`
+              : `Device (serial: ${deviceToAcceptReject.serial}) will be inactive and user (${deviceToAcceptReject.user?.fullName}) will not be able to access data`
+          }
+          show={showAcceptRejectConfirm}
+          onCancel={onCancelAcceptReject}
+          onConfirm={onConfirmAcceptReject}
+          isLoading={isAcceptRejectLoading}
+          confirmColor={isAccept === true ? "primary" : "error"}
+          cancelColor="secondary"
+          confirmText={
+            isAccept === true ? "Accept activation" : "Reject activation"
+          }
+          cancelText="Cancel"
+        />
+      ) : null}
     </Box>
   );
 }

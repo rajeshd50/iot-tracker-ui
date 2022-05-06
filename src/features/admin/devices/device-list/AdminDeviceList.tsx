@@ -24,7 +24,7 @@ const columns: GridColDef[] = [
     field: "serial",
     headerName: "Serial",
     sortable: false,
-    flex: 1,
+    width: 250,
     disableColumnMenu: true,
   },
   {
@@ -169,7 +169,7 @@ function AdminDeviceList() {
         getActions: (params: GridRowParams) => [
           <GridActionsCellItem
             icon={
-              <Tooltip title="Accept">
+              <Tooltip title="Approve">
                 <CheckCircleIcon
                   color="success"
                   sx={{
@@ -179,7 +179,7 @@ function AdminDeviceList() {
               </Tooltip>
             }
             onClick={() => onAcceptReject(params.row, true)}
-            label="Accept"
+            label="Approve"
           />,
           <GridActionsCellItem
             icon={
@@ -194,6 +194,7 @@ function AdminDeviceList() {
             }
             onClick={() => onAcceptReject(params.row, false)}
             label="Reject"
+            showInMenu
           />,
         ],
       },
