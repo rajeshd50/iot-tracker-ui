@@ -1,5 +1,6 @@
 import { APIS } from "../constants";
 import { PaginatedResponse, User } from "../models";
+import { UserWithDevice } from "../models/user-with-device.model";
 import { BaseApi } from "./base-api";
 import { getErrorMessage } from "./common";
 
@@ -20,6 +21,8 @@ export interface RegisterData {
   firstName: string;
   lastName: string;
 }
+
+export interface AddUserData extends RegisterData {}
 
 export interface ForgetPasswordData {
   email: string;
@@ -51,8 +54,14 @@ export interface ChangePasswordDto {
 
 export interface FetchUsersDto {
   searchText?: string;
+  isActive?: boolean;
   page: number;
   perPage: number;
+}
+
+export interface UpdateUserStatusDto {
+  id: string;
+  isActive: boolean;
 }
 
 const login = async ({ email, password }: LoginData) => {
@@ -262,6 +271,77 @@ const verifyEmail = async ({ emailVerifyToken }: VerifyEmailData) => {
   }
 };
 
+const addUser = async (data: AddUserData) => {
+  try {
+    const addResp = await BaseApi.post(APIS.USER.ADD_USER, {
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      password: data.password,
+    });
+    if (addResp && addResp.status === 201 && addResp.data.data) {
+      const user: User = addResp.data.data;
+
+      return user;
+    }
+    throw new Error(getErrorMessage(addResp, "Unable to add user"));
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+const fetchUsersWithDeviceStat = async (data: FetchUsersDto) => {
+  try {
+    const addResp = await BaseApi.post(
+      APIS.USER.FETCH_ALL_USER_WITH_DEVICE_STAT,
+      data
+    );
+    if (addResp && addResp.status === 200 && addResp.data.data) {
+      const userWithDevice: PaginatedResponse<UserWithDevice> =
+        addResp.data.data;
+
+      return userWithDevice;
+    }
+    throw new Error(getErrorMessage(addResp, "Unable to fetch users"));
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+const fetchUserDetails = async (id: string) => {
+  try {
+    const addResp = await BaseApi.get(
+      APIS.USER.FETCH_USER_DETAILS.replace(":id", id)
+    );
+    if (addResp && addResp.status === 200 && addResp.data.data) {
+      const user: UserWithDevice = addResp.data.data;
+
+      return user;
+    }
+    throw new Error(getErrorMessage(addResp, "Unable to add user"));
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+const updateUserStatus = async (data: UpdateUserStatusDto) => {
+  try {
+    const addResp = await BaseApi.post(APIS.USER.UPDATE_STATUS, data);
+    if (addResp && addResp.status === 201 && addResp.data.data) {
+      const user: UserWithDevice = addResp.data.data;
+
+      return user;
+    }
+    throw new Error(getErrorMessage(addResp, "Unable to update user status"));
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
 export const UserService = {
   login,
   register,
@@ -272,4 +352,8 @@ export const UserService = {
   resetPassword,
   sendEmailVerificationEmail,
   verifyEmail,
+  addUser,
+  fetchUsersWithDeviceStat,
+  fetchUserDetails,
+  updateUserStatus,
 };

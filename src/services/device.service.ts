@@ -131,7 +131,7 @@ const updateApproval = async (data: UpdateDeviceAssignmentApprovalDto) => {
 const updateStatus = async (data: UpdateDeviceStatusDto) => {
   try {
     const resp = await BaseApi.post(APIS.DEVICE.UPDATE_STATUS, data);
-    if (resp && resp.status === 200 && resp.data.data) {
+    if (resp && resp.status === 201 && resp.data.data) {
       const deviceData: Device = resp.data.data;
 
       return deviceData;

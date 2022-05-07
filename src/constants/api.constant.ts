@@ -13,6 +13,10 @@ export const APIS = {
     PROFILE: "user/profile",
     FETCH_ALL_USERS: "user/users",
     UPDATE: "user",
+    ADD_USER: "add-user",
+    FETCH_ALL_USER_WITH_DEVICE_STAT: "user/users-with-device-stat",
+    FETCH_USER_DETAILS: "user/user-details/:id",
+    UPDATE_STATUS: "user/update-user-status",
   },
   DEVICE_POOL: {
     CREATE: "device-pool/create",

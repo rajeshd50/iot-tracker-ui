@@ -13,6 +13,7 @@ export interface IDeviceListTableProps<T> {
   onPageChange: (page: number) => void;
   onPerPageChange: (perPage: number) => void;
   height?: string;
+  rowHeight?: number;
 }
 
 function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
@@ -26,6 +27,7 @@ function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
     isLoading,
     onPageChange,
     onPerPageChange,
+    rowHeight = 52,
   } = props;
   return (
     <Box
@@ -38,6 +40,7 @@ function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
         rows={rows}
         columns={columns}
         rowCount={total || 0}
+        rowHeight={rowHeight}
         page={page}
         pageSize={perPage}
         rowsPerPageOptions={[10, 15, 20]}

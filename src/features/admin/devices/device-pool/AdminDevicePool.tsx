@@ -213,13 +213,27 @@ function AdminDevicePoolList() {
           params.row.status === DevicePoolStatus.CREATED
             ? [
                 <GridActionsCellItem
-                  icon={<CheckCircleIcon />}
+                  icon={
+                    <CheckCircleIcon
+                      color="success"
+                      sx={{
+                        fontSize: "24px",
+                      }}
+                    />
+                  }
                   onClick={() => onClickMarkAsConfigured(params.row)}
                   label="Mark as configured"
                   showInMenu
                 />,
                 <GridActionsCellItem
-                  icon={<DeleteForeverIcon />}
+                  icon={
+                    <DeleteForeverIcon
+                      color="error"
+                      sx={{
+                        fontSize: "24px",
+                      }}
+                    />
+                  }
                   onClick={() => onClickDelete(params.row)}
                   label="Delete"
                   showInMenu
@@ -227,7 +241,14 @@ function AdminDevicePoolList() {
               ]
             : [
                 <GridActionsCellItem
-                  icon={<DeleteForeverIcon />}
+                  icon={
+                    <DeleteForeverIcon
+                      color="error"
+                      sx={{
+                        fontSize: "24px",
+                      }}
+                    />
+                  }
                   onClick={() => onClickDelete(params.row)}
                   label="Delete"
                   showInMenu

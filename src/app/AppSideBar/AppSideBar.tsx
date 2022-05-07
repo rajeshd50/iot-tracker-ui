@@ -251,6 +251,18 @@ function AppDrawerComponent({
                   setActive={setMenuActive}
                 />
               ) : null}
+              {!isAdmin ? (
+                <AppSideBarLink
+                  to={ROUTES.USER.DEVICE_DETAILS}
+                  IconComponent={AddIcon}
+                  text="Device Details"
+                  isNested
+                  menuType="device"
+                  isParentActive={deviceMenuOpen}
+                  setActive={setMenuActive}
+                  hidden
+                />
+              ) : null}
             </List>
           </Collapse>
         </List>

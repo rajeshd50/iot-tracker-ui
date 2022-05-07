@@ -96,6 +96,10 @@ function UserDeviceList() {
     setPage(newPage);
   };
 
+  const isFilterApplied = () => {
+    return !!searchText || !!liveStatus || !!deviceStatus;
+  };
+
   const onDeviceEditClick = (deviceToEdit: Device) => {};
   return (
     <Box
@@ -147,7 +151,7 @@ function UserDeviceList() {
         }}
       >
         <Pagination
-          count={totalDevices}
+          count={Math.ceil(totalDevices / DEFAULT_PER_PAGE)}
           color="primary"
           showFirstButton
           showLastButton
@@ -190,11 +194,11 @@ function UserDeviceList() {
               <>
                 <NoDataFallback
                   title={
-                    totalDevices
+                    isFilterApplied()
                       ? "No device found with selected filters"
                       : "No devices added yet!"
                   }
-                  showActionButton={!totalDevices}
+                  showActionButton={!isFilterApplied()}
                   actionButtonText="Add new device"
                   buttonProps={{
                     startIcon: <AddCircleIcon />,

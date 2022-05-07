@@ -188,7 +188,7 @@ function AdminDeviceRecentPurchaseList() {
         }
       );
     } finally {
-      setIsAcceptRejectLoading(true);
+      setIsAcceptRejectLoading(false);
       onCancelAcceptReject();
     }
   };

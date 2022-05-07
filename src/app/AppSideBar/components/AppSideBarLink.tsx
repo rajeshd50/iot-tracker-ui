@@ -11,6 +11,7 @@ export interface IAppSideBarLinkProps {
   isParentActive?: boolean;
   menuType?: MENU_TYPES;
   setActive?: (type: MENU_TYPES) => void;
+  hidden?: boolean;
 }
 
 function AppSideBarLink({
@@ -21,6 +22,7 @@ function AppSideBarLink({
   isParentActive,
   setActive,
   menuType,
+  hidden = false,
 }: IAppSideBarLinkProps) {
   const navigate = useNavigate();
   const resolved = useResolvedPath(to);
@@ -34,6 +36,9 @@ function AppSideBarLink({
     }
   }, [match, isParentActive, menuType, setActive]);
 
+  if (hidden) {
+    return null;
+  }
   return (
     <ListItemButton
       sx={{
