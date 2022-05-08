@@ -14,6 +14,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import DeviceDetailsWidget from "../../../../../common/components/device/device-details-widget/DeviceDetailsWidget";
 import { Device } from "../../../../../models/device.model";
 import { grey } from "@mui/material/colors";
+import UserDeviceDriverDetails from "./UserDeviceDriverDetails";
 
 export interface IUserDeviceSidePanelContentProps {
   onClose?: () => void;
@@ -123,6 +124,17 @@ function UserDeviceSidePanelContent({
             />
           </Grid>
         </LocalizationProvider>
+      </Grid>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          padding: "8px 10px",
+        }}
+      >
+        <Grid item xs={12}>
+          <UserDeviceDriverDetails device={device} />
+        </Grid>
       </Grid>
       <Box
         sx={{

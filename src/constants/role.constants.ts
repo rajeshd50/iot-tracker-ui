@@ -3,3 +3,8 @@ export enum ROLE_TYPES {
   USER = "user",
   ALL = "all",
 }
+
+export enum ADD_ROLE {
+  ADMIN = "admin",
+  USER = "user",
+}

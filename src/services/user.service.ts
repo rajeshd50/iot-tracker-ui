@@ -1,4 +1,4 @@
-import { APIS } from "../constants";
+import { ADD_ROLE, APIS, ROLE_TYPES } from "../constants";
 import { PaginatedResponse, User } from "../models";
 import { UserWithDevice } from "../models/user-with-device.model";
 import { BaseApi } from "./base-api";
@@ -22,7 +22,9 @@ export interface RegisterData {
   lastName: string;
 }
 
-export interface AddUserData extends RegisterData {}
+export interface AddUserData extends RegisterData {
+  role: ADD_ROLE;
+}
 
 export interface ForgetPasswordData {
   email: string;

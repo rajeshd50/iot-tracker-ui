@@ -13,7 +13,7 @@ export const APIS = {
     PROFILE: "user/profile",
     FETCH_ALL_USERS: "user/users",
     UPDATE: "user",
-    ADD_USER: "add-user",
+    ADD_USER: "user/add-user",
     FETCH_ALL_USER_WITH_DEVICE_STAT: "user/users-with-device-stat",
     FETCH_USER_DETAILS: "user/user-details/:id",
     UPDATE_STATUS: "user/update-user-status",
@@ -32,5 +32,6 @@ export const APIS = {
     UPDATE_STATUS: "device/update-status",
     DETAILS: "device/details",
     DELETE: "device/delete",
+    ASSIGN: "device/assign",
   },
 };

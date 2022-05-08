@@ -31,4 +31,8 @@ export interface Device extends BaseModel {
   vehicleNumber?: string;
   approvalRequestedAt?: string;
   lastSeenAt?: string;
+  firmwareVersion?: string;
+  driverName?: string;
+  driverContact?: string;
+  driverOtherDetails?: string;
 }

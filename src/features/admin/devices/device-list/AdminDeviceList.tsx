@@ -6,6 +6,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ToggleOffOutlinedIcon from "@mui/icons-material/ToggleOffOutlined";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import PageHeader from "../../../../common/components/page-header/PageHeader";
 import AdminDeviceListFilter from "./components/AdminDeviceListFilter";
@@ -24,6 +26,8 @@ import AdminDeviceDates from "./components/AdminDeviceDates";
 import ConfirmDialog from "../../../../common/components/confirm-dialog/ConfirmDialog";
 import AdminDeviceUserCell from "./components/AdminDeviceUserCell";
 import AdminDeviceStatusCell from "./components/AdminDeviceStatusCell";
+import AdminUserInfoDialog from "./components/AdminUserInfoDialog";
+import AdminDeviceAssignDialog from "./components/AdminDeviceAssignDialog";
 
 const columns: GridColDef[] = [
   {
@@ -31,6 +35,13 @@ const columns: GridColDef[] = [
     headerName: "Serial",
     sortable: false,
     width: 250,
+    disableColumnMenu: true,
+  },
+  {
+    field: "firmwareVersion",
+    headerName: "Firmware Version",
+    sortable: false,
+    width: 150,
     disableColumnMenu: true,
   },
   {
@@ -101,6 +112,18 @@ function AdminDeviceList() {
   const [deviceToToggle, setDeviceToToggle] = useState<Device | null>(null);
   const [isToggleStatusLoading, setIsToggleStatusLoading] = useState(false);
   // toggle status variables ends
+
+  // user info variables
+  const [showUserInfo, setShowUserInfo] = useState(false);
+  const [toShowUserInfoUserId, setToShowUserInfoUserId] = useState("");
+  // user info variables ends
+
+  // device assign variables
+  const [showDeviceAssignDialog, setShowDeviceAssignDialog] = useState(false);
+  const [deviceToAssign, setDeviceToAssign] = useState<Device | null>(null);
+  const [isDeviceAssigningLoading, setIsDeviceAssigningLoading] =
+    useState(false);
+  // device assign variables ends
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -241,72 +264,154 @@ function AdminDeviceList() {
   };
   // toggle active function ends
 
+  // device assign functions starts
+  const onClickAssignDeviceToUser = (device: Device) => {
+    setDeviceToAssign(device);
+    setShowDeviceAssignDialog(true);
+  };
+
+  const onCloseDeviceAssign = () => {
+    setDeviceToAssign(null);
+    setShowDeviceAssignDialog(false);
+  };
+
+  const onDeviceAssign = async (userId: string) => {
+    if (!deviceToAssign) {
+      return;
+    }
+    try {
+      setIsDeviceAssigningLoading(true);
+      await DeviceService.assign({
+        deviceId: deviceToAssign.id,
+        userId,
+      });
+      loadDevices();
+      enqueueSnackbar("Device assigned to user", {
+        variant: "success",
+      });
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while assigning device",
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setIsDeviceAssigningLoading(false);
+      onCloseDeviceAssign();
+    }
+  };
+  // device assign functions ends
+
+  // view user info functions starts
+  const onClickViewUserInfo = (device: Device) => {
+    if (device.user) {
+      setToShowUserInfoUserId(device.user.id);
+      setShowUserInfo(true);
+    }
+  };
+  const onCloseViewUserInfo = () => {
+    setToShowUserInfoUserId("");
+    setShowUserInfo(false);
+  };
+  // view user info functions ends
+
+  const getRowActions = (params: GridRowParams<Device>): JSX.Element[] => {
+    const actions: JSX.Element[] = [];
+    if (params.row.assignStatus === DeviceAssignStatus.PENDING_APPROVAL) {
+      return [
+        <GridActionsCellItem
+          icon={
+            <Tooltip title="Approve">
+              <CheckCircleIcon
+                color="success"
+                sx={{
+                  fontSize: "24px",
+                }}
+              />
+            </Tooltip>
+          }
+          onClick={() => onClickAcceptReject(params.row, true)}
+          label="Approve"
+        />,
+        <GridActionsCellItem
+          icon={
+            <Tooltip title="Reject">
+              <CancelIcon
+                color="error"
+                sx={{
+                  fontSize: "24px",
+                }}
+              />
+            </Tooltip>
+          }
+          onClick={() => onClickAcceptReject(params.row, false)}
+          label="Reject"
+          showInMenu
+        />,
+      ];
+    }
+    actions.push(
+      <GridActionsCellItem
+        icon={
+          params.row.status === DeviceStatus.ACTIVE ? (
+            <Tooltip title="Mark as inactive">
+              <ToggleOnIcon color="success" sx={{ fontSize: "36px" }} />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Mark as active">
+              <ToggleOffOutlinedIcon
+                color="warning"
+                sx={{ fontSize: "36px" }}
+              />
+            </Tooltip>
+          )
+        }
+        onClick={() => onClickToggleActiveStatus(params.row)}
+        label={
+          params.row.status === DeviceStatus.ACTIVE
+            ? "Mark as inactive"
+            : "Mark as active"
+        }
+      />
+    );
+    if (params.row.assignStatus === DeviceAssignStatus.NOT_ASSIGNED) {
+      actions.push(
+        <GridActionsCellItem
+          icon={
+            <Tooltip title="Assign to user">
+              <VerifiedUserIcon color="primary" sx={{ fontSize: "24px" }} />
+            </Tooltip>
+          }
+          onClick={() => onClickAssignDeviceToUser(params.row)}
+          label="Assign to user"
+          showInMenu
+        />
+      );
+    } else {
+      actions.push(
+        <GridActionsCellItem
+          icon={
+            <Tooltip title="View user info">
+              <AccountCircleIcon color="info" sx={{ fontSize: "24px" }} />
+            </Tooltip>
+          }
+          onClick={() => onClickViewUserInfo(params.row)}
+          label="View user info"
+          showInMenu
+        />
+      );
+    }
+    return actions;
+  };
+
   const getColumns = () => {
     return [
       ...columns,
       {
         field: "actions",
         type: "actions",
-        getActions: (params: GridRowParams<Device>) =>
-          params.row.assignStatus === DeviceAssignStatus.PENDING_APPROVAL
-            ? [
-                <GridActionsCellItem
-                  icon={
-                    <Tooltip title="Approve">
-                      <CheckCircleIcon
-                        color="success"
-                        sx={{
-                          fontSize: "24px",
-                        }}
-                      />
-                    </Tooltip>
-                  }
-                  onClick={() => onClickAcceptReject(params.row, true)}
-                  label="Approve"
-                />,
-                <GridActionsCellItem
-                  icon={
-                    <Tooltip title="Reject">
-                      <CancelIcon
-                        color="error"
-                        sx={{
-                          fontSize: "24px",
-                        }}
-                      />
-                    </Tooltip>
-                  }
-                  onClick={() => onClickAcceptReject(params.row, false)}
-                  label="Reject"
-                  showInMenu
-                />,
-              ]
-            : [
-                <GridActionsCellItem
-                  icon={
-                    params.row.status === DeviceStatus.ACTIVE ? (
-                      <Tooltip title="Mark as inactive">
-                        <ToggleOnIcon
-                          color="success"
-                          sx={{ fontSize: "36px" }}
-                        />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip title="Mark as active">
-                        <ToggleOffOutlinedIcon
-                          color="warning"
-                          sx={{ fontSize: "36px" }}
-                        />
-                      </Tooltip>
-                    )
-                  }
-                  onClick={() => onClickToggleActiveStatus(params.row)}
-                  label={
-                    params.row.status === DeviceStatus.ACTIVE
-                      ? "Mark as inactive"
-                      : "Mark as active"
-                  }
-                />,
-              ],
+        getActions: (params: GridRowParams<Device>) => getRowActions(params),
       },
     ];
   };
@@ -405,6 +510,22 @@ function AdminDeviceList() {
               : "Mark as active"
           }
           cancelText="Cancel"
+        />
+      ) : null}
+      {showUserInfo && toShowUserInfoUserId ? (
+        <AdminUserInfoDialog
+          show={showUserInfo}
+          userId={toShowUserInfoUserId}
+          onClose={onCloseViewUserInfo}
+        />
+      ) : null}
+      {showDeviceAssignDialog && deviceToAssign ? (
+        <AdminDeviceAssignDialog
+          device={deviceToAssign}
+          show={showDeviceAssignDialog}
+          onClose={onCloseDeviceAssign}
+          onDeviceAssign={onDeviceAssign}
+          loading={isDeviceAssigningLoading}
         />
       ) : null}
     </Box>

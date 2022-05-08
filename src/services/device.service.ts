@@ -66,6 +66,11 @@ export interface DeleteDeviceDto {
   id?: string;
 }
 
+export interface AssignDeviceDto {
+  deviceId: string;
+  userId: string;
+}
+
 const requestAssignment = async (data: RequestDeviceAssignmentDto) => {
   try {
     const resp = await BaseApi.post(APIS.DEVICE.REQUEST_ASSIGNMENT, data);
@@ -171,6 +176,21 @@ const remove = async (data: DeleteDeviceDto) => {
   }
 };
 
+const assign = async (data: AssignDeviceDto) => {
+  try {
+    const resp = await BaseApi.post(APIS.DEVICE.ASSIGN, data);
+    if (resp && resp.status === 200 && resp.data.data) {
+      const deviceData: Device = resp.data.data;
+
+      return deviceData;
+    }
+    throw new Error(getErrorMessage(resp, "Unable to assign device"));
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
 export const DeviceService = {
   requestAssignment,
   fetch,
@@ -179,4 +199,5 @@ export const DeviceService = {
   updateStatus,
   details,
   remove,
+  assign,
 };

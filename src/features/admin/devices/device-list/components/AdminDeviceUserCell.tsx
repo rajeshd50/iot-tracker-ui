@@ -7,6 +7,9 @@ export interface IAdminDeviceUserCellProps {
 }
 
 function AdminDeviceUserCell({ device }: IAdminDeviceUserCellProps) {
+  if (!device.user) {
+    return null;
+  }
   return (
     <>
       <Box
@@ -18,9 +21,6 @@ function AdminDeviceUserCell({ device }: IAdminDeviceUserCellProps) {
         }}
       >
         <Typography>{device.user?.email}</Typography>
-        <Button size="small" variant="text" color="primary" onClick={() => {}}>
-          View details
-        </Button>
       </Box>
     </>
   );

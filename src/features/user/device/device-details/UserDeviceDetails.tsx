@@ -1,5 +1,5 @@
 import { Box, Fab, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 import UserDeviceMap from "./components/UserDeviceMap";
@@ -12,26 +12,76 @@ import {
 } from "../../../../models/device.model";
 import DeviceDetailsWidget from "../../../../common/components/device/device-details-widget/DeviceDetailsWidget";
 import { grey } from "@mui/material/colors";
-
-const deviceDetails: Device = {
-  name: "my car",
-  serial: "SN-sdsdsd-fdfdf-23dsf-24dsf",
-  vehicleName: "car one",
-  vehicleNumber: "wb78 23ba 6767",
-  id: "1",
-  status: DeviceStatus.ACTIVE,
-  liveStatus: DeviceLiveStatus.ONLINE,
-  assignStatus: DeviceAssignStatus.ASSIGNED,
-  approvalRequestedAt: "2022-04-12T08:13:55.512Z",
-  approvedAt: "2022-04-12T12:35:55.512Z",
-  lastSeenAt: "2022-05-05T08:13:55.512Z",
-};
+import { useNavigate, useParams } from "react-router-dom";
+import { ROUTES } from "../../../../constants";
+import { decodeDeviceSerial } from "../../../../common/util/util";
+import UserDeviceDetailsSkeleton from "./components/UserDeviceDetailsSkeleton";
+import { useSnackbar } from "notistack";
+import { DeviceService } from "../../../../services";
 
 function UserDeviceDetails() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const onCloseSidePanel = () => {
     setIsMobileOpen(false);
   };
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const params = useParams();
+  const navigate = useNavigate();
+  const [deviceDetails, setDeviceDetails] = useState<Device | null>(null);
+  const [deviceDetailsLoading, setDeviceDetailsLoading] = useState(false);
+
+  const gotoDeviceList = () => {
+    navigate(ROUTES.USER.DEVICE_LIST);
+  };
+
+  const loadDeviceDetails = async () => {
+    const encodedDeviceSerial = params.serial;
+    if (!encodedDeviceSerial) {
+      return;
+    }
+    const decodedSerial = decodeDeviceSerial(encodedDeviceSerial);
+    try {
+      setDeviceDetailsLoading(true);
+      const deviceData = await DeviceService.details({
+        serial: decodedSerial,
+      });
+      if (deviceData) {
+        setDeviceDetails(deviceData);
+      } else {
+        setDeviceDetailsLoading(false);
+        throw new Error("Invalid device");
+      }
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while fetching device details",
+        {
+          variant: "error",
+        }
+      );
+      gotoDeviceList();
+    } finally {
+      setDeviceDetailsLoading(false);
+    }
+  };
+
+  const loadDeviceDetailsCallback = useCallback(async () => {
+    await loadDeviceDetails();
+  }, [params]);
+
+  useEffect(() => {
+    if (params.serial) {
+      loadDeviceDetailsCallback();
+    } else {
+      gotoDeviceList();
+    }
+  }, [params, loadDeviceDetailsCallback]);
+
+  if (!deviceDetails || deviceDetailsLoading) {
+    return <UserDeviceDetailsSkeleton />;
+  }
+
   return (
     <Box
       sx={{
@@ -75,7 +125,7 @@ function UserDeviceDetails() {
             marginRight: "4px",
           }}
         />
-        <Typography variant="h6">Filters</Typography>
+        <Typography variant="h6">Controls</Typography>
       </Fab>
       <UserDeviceSidePanel
         isMobileOpen={isMobileOpen}

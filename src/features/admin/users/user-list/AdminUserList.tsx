@@ -15,10 +15,11 @@ import PageHeader from "../../../../common/components/page-header/PageHeader";
 import { formatDateTime } from "../../../../common/util/util";
 import { User } from "../../../../models";
 import { UserWithDevice } from "../../../../models/user-with-device.model";
-import { UserService } from "../../../../services";
+import { AddUserData, UserService } from "../../../../services";
 import AdminUserListActionComponent from "./components/AdminUserListActionComponent";
 import AdminUserListFilter from "./components/AdminUserListFilter";
 import ConfirmDialog from "../../../../common/components/confirm-dialog/ConfirmDialog";
+import AdminAddUserDialog from "./components/AdminAddUserDialog";
 
 const columns: GridColDef[] = [
   {
@@ -106,6 +107,7 @@ function AdminUserList() {
   const [isActive, setIsActive] = useState<boolean | undefined>(undefined);
 
   const [addingNewUser, setAddingNewUser] = useState(false);
+  const [showAddUserDialog, setShowAddUserDialog] = useState(false);
 
   // toggle status variables
   const [showToggleStatusConfirm, setShowToggleStatusConfirm] = useState(false);
@@ -189,7 +191,34 @@ function AdminUserList() {
   };
   // toggle active function ends
 
-  const addNewUserClick = () => {};
+  const onAddUserClose = () => {
+    setShowAddUserDialog(false);
+  };
+
+  const addNewUserClick = () => {
+    setShowAddUserDialog(true);
+  };
+
+  const onAddUser = async (data: AddUserData) => {
+    try {
+      setAddingNewUser(true);
+      await UserService.addUser(data);
+      enqueueSnackbar("User successfully added", {
+        variant: "success",
+      });
+      loadUsers();
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while adding new user",
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setAddingNewUser(false);
+      onAddUserClose();
+    }
+  };
 
   const getColumns = () => {
     return [
@@ -283,6 +312,12 @@ function AdminUserList() {
           cancelText="Cancel"
         />
       ) : null}
+      <AdminAddUserDialog
+        loading={addingNewUser}
+        onClose={onAddUserClose}
+        show={showAddUserDialog}
+        onAddUser={onAddUser}
+      />
     </Box>
   );
 }

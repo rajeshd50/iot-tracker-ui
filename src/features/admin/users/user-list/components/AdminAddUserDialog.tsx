@@ -1,7 +1,6 @@
 import {
   TextField,
   Grid,
-  Link,
   Button,
   Box,
   CircularProgress,
@@ -9,6 +8,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Switch,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import React from "react";
 
@@ -17,6 +21,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { AddUserData } from "../../../../../services";
 import { grey } from "@mui/material/colors";
+import { ADD_ROLE } from "../../../../../constants";
 
 const addUserSchema = yup
   .object({
@@ -33,6 +38,10 @@ const addUserSchema = yup
     retypePassword: yup
       .string()
       .oneOf([yup.ref("password"), null], "Password must match"),
+    role: yup
+      .string()
+      .oneOf([ADD_ROLE.ADMIN, ADD_ROLE.USER])
+      .required("Please select user role"),
   })
   .required();
 
@@ -60,6 +69,7 @@ function AdminAddUserDialog({
       firstName: "",
       lastName: "",
       retypePassword: "",
+      role: ADD_ROLE.USER,
     },
     resolver: yupResolver(addUserSchema),
   });
@@ -131,7 +141,7 @@ function AdminAddUserDialog({
                   <TextField
                     type="email"
                     placeholder="Email address"
-                    label="Emsubmitail address"
+                    label="Email address"
                     disabled={loading}
                     error={!!errors.email}
                     helperText={errors.email?.message}
@@ -174,6 +184,26 @@ function AdminAddUserDialog({
                 )}
               />
             </Grid>
+            <Grid item xs={12} mb={1}>
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel id="user-status-select-label">Role</InputLabel>
+                    <Select
+                      labelId="user-status-select-label"
+                      id="user-status-select"
+                      label="Role"
+                      {...field}
+                    >
+                      <MenuItem value={ADD_ROLE.USER}>User</MenuItem>
+                      <MenuItem value={ADD_ROLE.ADMIN}>Admin</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -187,11 +217,20 @@ function AdminAddUserDialog({
             Cancel
           </Button>
           <Button
-            disabled={!loading}
+            disabled={loading}
             variant="contained"
             color="primary"
             type="submit"
           >
+            {loading && (
+              <CircularProgress
+                size="1rem"
+                color="primary"
+                sx={{
+                  marginRight: "8px",
+                }}
+              />
+            )}
             Add User
           </Button>
         </DialogActions>

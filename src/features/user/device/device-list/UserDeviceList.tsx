@@ -22,7 +22,8 @@ import UserDeviceDetailsCardView from "./components/UserDeviceDetailsCardView";
 import UserDeviceDetailsListView from "./components/UserDeviceDetailsListView";
 import UserDeviceLoadingSkelton from "./components/UserDeviceLoadingSkelton";
 import NoDataFallback from "../../../../common/components/no-data-fallback/NoDataFallback";
-import { DeviceService } from "../../../../services";
+import { DeviceService, UpdateDeviceDto } from "../../../../services";
+import UserEditDeviceDialog from "./components/UserEditDeviceDialog";
 
 const DEFAULT_PER_PAGE = 10;
 
@@ -39,6 +40,12 @@ function UserDeviceList() {
 
   const theme = useTheme();
   const matchesXS = useMediaQuery(theme.breakpoints.down("sm"));
+
+  // edit device variables
+  const [deviceToEdit, setDeviceToEdit] = useState<Device | null>(null);
+  const [isDeviceEditLoading, setIsDeviceEditLoading] = useState(false);
+  const [showDeviceEdit, setShowDeviceEdit] = useState(false);
+  // edit device variables ends
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -100,7 +107,31 @@ function UserDeviceList() {
     return !!searchText || !!liveStatus || !!deviceStatus;
   };
 
-  const onDeviceEditClick = (deviceToEdit: Device) => {};
+  const onDeviceEditClick = (deviceToEdit: Device) => {
+    setDeviceToEdit(deviceToEdit);
+    setShowDeviceEdit(true);
+  };
+
+  const onDeviceEditClose = () => {
+    setDeviceToEdit(null);
+    setShowDeviceEdit(false);
+  };
+
+  const onDeviceEdit = async (data: UpdateDeviceDto) => {
+    try {
+      setIsDeviceEditLoading(true);
+      await DeviceService.update(data);
+      loadDevices();
+    } catch (e: any) {
+      enqueueSnackbar(e && e.message ? e.message : "Unable to fetch devices", {
+        variant: "error",
+      });
+    } finally {
+      setIsDeviceEditLoading(false);
+      onDeviceEditClose();
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -212,6 +243,15 @@ function UserDeviceList() {
           </>
         )}
       </Box>
+      {showDeviceEdit && deviceToEdit ? (
+        <UserEditDeviceDialog
+          show={showDeviceEdit}
+          device={deviceToEdit}
+          onClose={onDeviceEditClose}
+          onDeviceUpdate={onDeviceEdit}
+          loading={isDeviceEditLoading}
+        />
+      ) : null}
     </Box>
   );
 }

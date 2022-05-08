@@ -1,7 +1,11 @@
 import React from "react";
 import GoogleMapReact from "google-map-react";
 import { alpha, Box } from "@mui/material";
-import { Device, DeviceStatus } from "../../../../../models";
+import {
+  Device,
+  DeviceAssignStatus,
+  DeviceStatus,
+} from "../../../../../models";
 import AppImage from "../../../../../common/components/system/AppImage/AppImage";
 import { grey } from "@mui/material/colors";
 
@@ -10,14 +14,17 @@ export interface IUserDeviceMapProps {
 }
 
 function UserDeviceMap({ device }: IUserDeviceMapProps) {
-  return (
-    <Box
-      sx={{
-        height: "calc(100vh - 190px)",
-        width: "100%",
-      }}
-    >
-      {device.status === DeviceStatus.INACTIVE ? (
+  if (
+    device.status === DeviceStatus.INACTIVE ||
+    device.assignStatus !== DeviceAssignStatus.ASSIGNED
+  ) {
+    return (
+      <Box
+        sx={{
+          height: "calc(100vh - 190px)",
+          width: "100%",
+        }}
+      >
         <Box
           sx={{
             position: "relative",
@@ -47,16 +54,24 @@ function UserDeviceMap({ device }: IUserDeviceMapProps) {
             alt="Default map"
           />
         </Box>
-      ) : (
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY || "" }}
-          defaultCenter={{
-            lat: 22.5726,
-            lng: 88.3639,
-          }}
-          defaultZoom={16}
-        ></GoogleMapReact>
-      )}
+      </Box>
+    );
+  }
+  return (
+    <Box
+      sx={{
+        height: "calc(100vh - 190px)",
+        width: "100%",
+      }}
+    >
+      <GoogleMapReact
+        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY || "" }}
+        defaultCenter={{
+          lat: 22.5726,
+          lng: 88.3639,
+        }}
+        defaultZoom={16}
+      ></GoogleMapReact>
     </Box>
   );
 }
