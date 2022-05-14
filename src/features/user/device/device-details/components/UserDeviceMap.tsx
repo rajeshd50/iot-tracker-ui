@@ -1,5 +1,4 @@
 import React from "react";
-import GoogleMapReact from "google-map-react";
 import { alpha, Box } from "@mui/material";
 import {
   Device,
@@ -8,6 +7,7 @@ import {
 } from "../../../../../models";
 import AppImage from "../../../../../common/components/system/AppImage/AppImage";
 import { grey } from "@mui/material/colors";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 
 export interface IUserDeviceMapProps {
   device: Device;
@@ -64,14 +64,22 @@ function UserDeviceMap({ device }: IUserDeviceMapProps) {
         width: "100%",
       }}
     >
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY || "" }}
-        defaultCenter={{
-          lat: 22.5726,
-          lng: 88.3639,
-        }}
-        defaultZoom={16}
-      ></GoogleMapReact>
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_KEY || ""}>
+        <GoogleMap
+          mapContainerStyle={{
+            height: "100%",
+            width: "100%",
+          }}
+          center={{
+            lat: 22.5726,
+            lng: 88.3639,
+          }}
+          zoom={10}
+        >
+          {/* Child components, such as markers, info windows, etc. */}
+          <></>
+        </GoogleMap>
+      </LoadScript>
     </Box>
   );
 }

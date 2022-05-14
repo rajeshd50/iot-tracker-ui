@@ -19,10 +19,6 @@ export const formatNumber = (value: number) => {
   return numberFormatter.format(value);
 };
 
-export const formatCalorie = (value: number) => {
-  return `${formatNumber(value)} cal`;
-};
-
 export const formatDate = (
   value: Date | string,
   formatString = "dd, MMM yyyy, EEE"

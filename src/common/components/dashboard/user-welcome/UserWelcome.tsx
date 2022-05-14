@@ -5,7 +5,11 @@ import { useAppSelector } from "../../../../store/hooks";
 import { selectUserDetails } from "../../../../store/reducers/userSlice";
 import AppImage from "../../system/AppImage/AppImage";
 
-function UserWelcome() {
+export interface IUserWelcomeProps {
+  minimal?: boolean;
+}
+
+function UserWelcome({ minimal = false }: IUserWelcomeProps) {
   const theme = useTheme();
   const userDetails: User = useAppSelector(selectUserDetails);
   return (
@@ -24,32 +28,50 @@ function UserWelcome() {
           alignItems: "stretch",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            flexDirection: "column",
-            color: theme.palette.primary.contrastText,
-          }}
-        >
-          <Typography variant="h4">Welcome back</Typography>
-          <Typography variant="h5">{userDetails.fullName}</Typography>
-        </Box>
-        <Box
-          sx={{
-            "& img": {
-              width: "18rem",
-            },
-            display: {
-              md: "block",
-              sm: "none",
-              xs: "none",
-            },
-          }}
-        >
-          <AppImage src="/img/app-dashboard-welcome-image.jpg" alt="Welcome" />
-        </Box>
+        {minimal ? (
+          <>
+            <Typography
+              variant="h5"
+              sx={{
+                color: theme.palette.primary.contrastText,
+              }}
+            >
+              Hi {userDetails.firstName}, welcome back!
+            </Typography>
+          </>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              flexDirection: "column",
+              color: theme.palette.primary.contrastText,
+            }}
+          >
+            <Typography variant="h4">Welcome back</Typography>
+            <Typography variant="h5">{userDetails.fullName}</Typography>
+          </Box>
+        )}
+        {minimal ? null : (
+          <Box
+            sx={{
+              "& img": {
+                width: "18rem",
+              },
+              display: {
+                md: "block",
+                sm: "none",
+                xs: "none",
+              },
+            }}
+          >
+            <AppImage
+              src="/img/app-dashboard-welcome-image.jpg"
+              alt="Welcome"
+            />
+          </Box>
+        )}
       </Box>
     </Paper>
   );
