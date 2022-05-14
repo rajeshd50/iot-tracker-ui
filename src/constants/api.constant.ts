@@ -34,4 +34,20 @@ export const APIS = {
     DELETE: "device/delete",
     ASSIGN: "device/assign",
   },
+  GEO_FENCE: {
+    ADD: "geo-fence/add",
+    UPDATE: "geo-fence/update",
+    DETAILS: "geo-fence/details",
+    FETCH: "geo-fence/fetch",
+    DELETE: "geo-fence/remove",
+    ADD_TO_DEVICE: "geo-fence/add-to-device",
+    REMOVE_FROM_DEVICE: "geo-fence/remove-from-device",
+    CHANGE_STATUS: "geo-fence/change-status",
+  },
+  DEVICE_FIRMWARE: {
+    ADD: "firmware/add",
+    DELETE: "firmware/remove",
+    FETCH: "firmware/fetch",
+    SYNC: "firmware/sync",
+  },
 };

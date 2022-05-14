@@ -23,6 +23,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import WavesIcon from "@mui/icons-material/Waves";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
+import FenceIcon from "@mui/icons-material/Fence";
+import MapIcon from "@mui/icons-material/Map";
+import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
@@ -48,7 +51,7 @@ interface IAppDrawerComponentProps {
   isHovering?: boolean;
   isMobile?: boolean;
 }
-export type MENU_TYPES = "device" | "user" | "account";
+export type MENU_TYPES = "device" | "user" | "account" | "geo-fence";
 function AppDrawerComponent({
   isHovering = false,
   isMobile = false,
@@ -58,6 +61,7 @@ function AppDrawerComponent({
   const [deviceMenuOpen, setDeviceMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [geoFenceMenuOpen, setGeoFenceMenuOpen] = useState(false);
   const theme = useTheme();
   const isAdmin = useAppSelector(selectIsUserAdmin);
   const getUserBadge = () => {
@@ -76,6 +80,9 @@ function AppDrawerComponent({
         break;
       case "account":
         setAccountMenuOpen(true);
+        break;
+      case "geo-fence":
+        setGeoFenceMenuOpen(true);
         break;
     }
   };
@@ -266,6 +273,52 @@ function AppDrawerComponent({
             </List>
           </Collapse>
         </List>
+        {!isAdmin && (
+          <List
+            subheader={
+              <ListSubheader component="div" id="geo-fence-subheader">
+                <Typography variant="h6">Geo-Fence</Typography>
+              </ListSubheader>
+            }
+          >
+            <ListItemButton
+              onClick={() => setGeoFenceMenuOpen(!geoFenceMenuOpen)}
+              selected={geoFenceMenuOpen}
+            >
+              <ListItemIcon>
+                <MapIcon />
+              </ListItemIcon>
+              <ListItemText primary="Geo fence" />
+              {geoFenceMenuOpen ? (
+                <KeyboardArrowDownIcon />
+              ) : (
+                <KeyboardArrowRightIcon />
+              )}
+            </ListItemButton>
+            <Collapse in={geoFenceMenuOpen} timeout="auto">
+              <List component="div" disablePadding>
+                <AppSideBarLink
+                  to={ROUTES.USER.GEO_FENCES}
+                  IconComponent={FenceIcon}
+                  text="Geo-Fence List"
+                  isNested
+                  menuType="geo-fence"
+                  isParentActive={geoFenceMenuOpen}
+                  setActive={setMenuActive}
+                />
+                <AppSideBarLink
+                  to={ROUTES.USER.GEO_FENCE_ADD}
+                  IconComponent={AddLocationAltIcon}
+                  text="Add geo-fence"
+                  isNested
+                  menuType="geo-fence"
+                  isParentActive={geoFenceMenuOpen}
+                  setActive={setMenuActive}
+                />
+              </List>
+            </Collapse>
+          </List>
+        )}
         {isAdmin && (
           <List
             subheader={

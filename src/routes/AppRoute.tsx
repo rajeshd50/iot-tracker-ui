@@ -22,6 +22,8 @@ import RegisterLoadable from "../features/auth/register/RegisterLoadable";
 import VerifyEmailLoadable from "../features/auth/verify-email/VerifyEmailLoadable";
 import AdminRecentPurchasesLoadable from "../features/admin/devices/recent-purchases/AdminRecentPurchasesLoadable";
 import UserDeviceAddLoadable from "../features/user/device/device-add/UserDeviceAddLoadable";
+import UserGeoFenceListLoadable from "../features/user/geofence/geofence-list/UserGeoFenceListLoadable";
+import UserGeoFenceAddUpdateLoadable from "../features/user/geofence/geofence-details/UserGeoFenceAddUpdateLoadable";
 
 function AppRoute() {
   return (
@@ -90,6 +92,18 @@ function AppRoute() {
       <Route
         path={ROUTES.USER.ADD_NEW_DEVICE}
         element={withAuthHoc(UserDeviceAddLoadable, ROLE_TYPES.USER)}
+      />
+      <Route
+        path={ROUTES.USER.GEO_FENCES}
+        element={withAuthHoc(UserGeoFenceListLoadable, ROLE_TYPES.USER)}
+      />
+      <Route
+        path={ROUTES.USER.GEO_FENCE_ADD}
+        element={withAuthHoc(UserGeoFenceAddUpdateLoadable, ROLE_TYPES.USER)}
+      />
+      <Route
+        path={ROUTES.USER.GEO_FENCE_EDIT}
+        element={withAuthHoc(UserGeoFenceAddUpdateLoadable, ROLE_TYPES.USER)}
       />
       {/* not found route */}
       <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
