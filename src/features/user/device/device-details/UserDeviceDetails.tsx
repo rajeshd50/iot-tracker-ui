@@ -15,9 +15,9 @@ import { grey } from "@mui/material/colors";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../../constants";
 import { decodeDeviceSerial } from "../../../../common/util/util";
-import UserDeviceDetailsSkeleton from "./components/UserDeviceDetailsSkeleton";
 import { useSnackbar } from "notistack";
 import { DeviceService } from "../../../../services";
+import PageDataLoader from "../../../../common/components/page-data-loader/PageDataLoader";
 
 function UserDeviceDetails() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -79,7 +79,7 @@ function UserDeviceDetails() {
   }, [params, loadDeviceDetailsCallback]);
 
   if (!deviceDetails || deviceDetailsLoading) {
-    return <UserDeviceDetailsSkeleton />;
+    return <PageDataLoader />;
   }
 
   return (

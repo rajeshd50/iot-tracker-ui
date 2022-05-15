@@ -8,6 +8,7 @@ export interface INoDataFallbackProps {
   actionButtonText?: string;
   onActionButtonClick?: () => void;
   buttonProps?: ButtonProps;
+  imageWidth?: string;
 }
 
 function NoDataFallback(props: INoDataFallbackProps) {
@@ -17,6 +18,7 @@ function NoDataFallback(props: INoDataFallbackProps) {
     actionButtonText = "Go to homepage",
     onActionButtonClick,
     buttonProps = {},
+    imageWidth = "250px",
   } = props;
 
   const onButtonClick = () => {
@@ -39,7 +41,7 @@ function NoDataFallback(props: INoDataFallbackProps) {
           src="/img/no_data.png"
           alt="No data available to show"
           imgProps={{
-            width: "250px",
+            width: imageWidth,
           }}
         />
       </Box>

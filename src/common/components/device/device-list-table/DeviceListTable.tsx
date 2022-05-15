@@ -14,6 +14,9 @@ export interface IDeviceListTableProps<T> {
   onPerPageChange: (perPage: number) => void;
   height?: string;
   rowHeight?: number;
+  noRowText?: string;
+  noResultText?: string;
+  imageWidth?: string;
 }
 
 function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
@@ -28,6 +31,9 @@ function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
     onPageChange,
     onPerPageChange,
     rowHeight = 52,
+    noRowText = "No data available to show",
+    noResultText = "No data available to show, try changing filters",
+    imageWidth = "250px",
   } = props;
   return (
     <Box
@@ -58,10 +64,10 @@ function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
         onPageSizeChange={(pageSize: number) => onPerPageChange(pageSize)}
         components={{
           NoRowsOverlay: () => (
-            <NoDataFallback title="No data available to show" />
+            <NoDataFallback title={noRowText} imageWidth={imageWidth} />
           ),
           NoResultsOverlay: () => (
-            <NoDataFallback title="No data available to show, try changing filters" />
+            <NoDataFallback title={noResultText} imageWidth={imageWidth} />
           ),
         }}
       />

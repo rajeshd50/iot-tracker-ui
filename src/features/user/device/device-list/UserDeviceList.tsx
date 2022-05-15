@@ -1,6 +1,5 @@
 import { alpha, Box, Button, Pagination } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-import TablePagination from "@mui/material/TablePagination";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useSnackbar } from "notistack";
 

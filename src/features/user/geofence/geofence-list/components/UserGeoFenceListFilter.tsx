@@ -14,34 +14,43 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import UserAutoCompleteSelect from "../../../../../common/components/admin/user-autocomplete-select/UserAutoCompleteSelect";
-import { User } from "../../../../../models";
 
-export interface IAdminRecentPurchasesFilterProps {
+import { Device, DeviceStatus, GeoFenceStatus } from "../../../../../models";
+import DeviceAutoCompleteSelect from "../../../../../common/components/device/device-auto-complete-select/DeviceAutoCompleteSelect";
+
+export interface IUserGeoFenceListFilterProps {
   isLoading: boolean;
-  onFilterUpdate: (serial: string | null, user: string | null) => void;
+  onFilterUpdate: (
+    searchText: string | null,
+    deviceSerial: string | null,
+    status: GeoFenceStatus | string | null
+  ) => void;
   onFilterReset: () => void;
 }
 
-function AdminRecentPurchasesFilter(props: IAdminRecentPurchasesFilterProps) {
+function UserGeoFenceListFilter(props: IUserGeoFenceListFilterProps) {
   const { isLoading, onFilterReset, onFilterUpdate } = props;
-  const [serial, setSerial] = useState("");
-  const [user, setUser] = useState<User | null>(null);
+  const [searchText, setSearchText] = useState("");
+  const [device, setDevice] = useState<Device | null>(null);
+  const [geoFenceStatus, setGeoFenceStatus] = useState<GeoFenceStatus | string>(
+    ""
+  );
 
   useEffect(() => {
-    if (!user) {
+    if (!device) {
       onClickSearch();
     }
-  }, [user]);
+  }, [device]);
 
   const onReset = () => {
-    setSerial("");
-    setUser(null);
+    setSearchText("");
+    setDevice(null);
+    setGeoFenceStatus("");
     onFilterReset();
   };
 
   const onClickSearch = () => {
-    onFilterUpdate(serial, user ? user.id : null);
+    onFilterUpdate(searchText, device ? device.serial : null, geoFenceStatus);
   };
 
   return (
@@ -69,24 +78,43 @@ function AdminRecentPurchasesFilter(props: IAdminRecentPurchasesFilterProps) {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <TextField
-                label="Serial"
-                placeholder="Serial number"
-                name="serial"
+                label="Search"
+                placeholder="Search by name"
+                name="searchText"
                 autoComplete="off"
-                value={serial}
+                value={searchText}
                 onChange={(e) => {
-                  setSerial(e.target.value);
+                  setSearchText(e.target.value);
                 }}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <UserAutoCompleteSelect
-                onSelect={(newUser) => setUser(newUser)}
-                onClear={() => setUser(null)}
-                selectedUser={user}
+              <DeviceAutoCompleteSelect
+                onSelect={(device) => setDevice(device)}
+                selectedDevice={device}
+                defaultFilter={{
+                  status: DeviceStatus.ACTIVE,
+                }}
               />
             </Grid>
-            <Grid xs={12} sm={12} md={4} item>
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth>
+                <InputLabel id="geo-fence-status-filter-select-label">
+                  Status
+                </InputLabel>
+                <Select
+                  labelId="geo-fence-status-filter-select-label"
+                  id="geo-fence-status-filter-select"
+                  value={geoFenceStatus}
+                  label="Geo-fence status"
+                  onChange={(e) => setGeoFenceStatus(e.target.value)}
+                >
+                  <MenuItem value={GeoFenceStatus.ACTIVE}>Active</MenuItem>
+                  <MenuItem value={GeoFenceStatus.INACTIVE}>Inactive</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid xs={12} sm={12} item>
               <Box
                 sx={{
                   display: "flex",
@@ -107,13 +135,17 @@ function AdminRecentPurchasesFilter(props: IAdminRecentPurchasesFilterProps) {
               >
                 <Button
                   color="secondary"
-                  disabled={(!serial && !user) || isLoading}
+                  disabled={
+                    (!searchText && !device && !geoFenceStatus) || isLoading
+                  }
                   onClick={onReset}
                 >
                   Reset
                 </Button>
                 <Button
-                  disabled={(!serial && !user) || isLoading}
+                  disabled={
+                    (!searchText && !device && !geoFenceStatus) || isLoading
+                  }
                   color="primary"
                   variant="contained"
                   onClick={onClickSearch}
@@ -129,4 +161,4 @@ function AdminRecentPurchasesFilter(props: IAdminRecentPurchasesFilterProps) {
   );
 }
 
-export default AdminRecentPurchasesFilter;
+export default UserGeoFenceListFilter;

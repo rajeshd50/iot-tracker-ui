@@ -1,7 +1,14 @@
 import { APIS } from "../constants";
 import { BaseApi } from "./base-api";
 import { getErrorMessage } from "./common";
-import { PaginatedResponse, GeoFence } from "../models";
+import {
+  PaginatedResponse,
+  GeoFence,
+  GeoFenceType,
+  GeoFenceCoordinateModel,
+  GeoBound,
+  GeoFenceStatus,
+} from "../models";
 
 export interface GeoFenceCoordinates {
   lat: number;
@@ -10,7 +17,13 @@ export interface GeoFenceCoordinates {
 
 export interface AddGeoFenceDto {
   name: string;
+  bound?: GeoBound;
+  description?: string;
   coordinates: GeoFenceCoordinates[];
+  type: GeoFenceType;
+  circleCenter?: GeoFenceCoordinateModel;
+  circleRadius?: number;
+  rectangleBound?: GeoBound;
 }
 
 export interface UpdateGeoFenceDto extends AddGeoFenceDto {
@@ -24,7 +37,10 @@ export interface FetchGeoFenceDetailsDto {
 export interface FetchGeoFencesDto {
   page: number;
   perPage: number;
-  name?: string;
+  searchText?: string;
+  status?: GeoFenceStatus | string;
+  deviceSerial?: string;
+  withoutDeviceSerial?: string;
 }
 
 export interface DeleteGeoFenceDto {

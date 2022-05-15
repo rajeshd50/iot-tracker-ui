@@ -23,7 +23,8 @@ import VerifyEmailLoadable from "../features/auth/verify-email/VerifyEmailLoadab
 import AdminRecentPurchasesLoadable from "../features/admin/devices/recent-purchases/AdminRecentPurchasesLoadable";
 import UserDeviceAddLoadable from "../features/user/device/device-add/UserDeviceAddLoadable";
 import UserGeoFenceListLoadable from "../features/user/geofence/geofence-list/UserGeoFenceListLoadable";
-import UserGeoFenceAddUpdateLoadable from "../features/user/geofence/geofence-details/UserGeoFenceAddUpdateLoadable";
+import UserGeoFenceAddUpdateLoadable from "../features/user/geofence/geofence-add-update/UserGeoFenceAddUpdateLoadable";
+import UserGeoFenceDetailsLoadable from "../features/user/geofence/geofence-details/UserGeoFenceDetailsLoadable";
 
 function AppRoute() {
   return (
@@ -96,6 +97,10 @@ function AppRoute() {
       <Route
         path={ROUTES.USER.GEO_FENCES}
         element={withAuthHoc(UserGeoFenceListLoadable, ROLE_TYPES.USER)}
+      />
+      <Route
+        path={ROUTES.USER.GEO_FENCE_DETAILS}
+        element={withAuthHoc(UserGeoFenceDetailsLoadable, ROLE_TYPES.USER)}
       />
       <Route
         path={ROUTES.USER.GEO_FENCE_ADD}

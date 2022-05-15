@@ -65,6 +65,9 @@ export const ComponentOverrides: Components = {
         "& .MuiInputBase-root": {
           height: "48px",
         },
+        "& .MuiInputBase-multiline": {
+          height: "auto",
+        },
         "& .MuiInputBase-input": {
           height: "32px",
           padding: "8px 8px",

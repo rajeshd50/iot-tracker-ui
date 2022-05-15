@@ -315,6 +315,26 @@ function AppDrawerComponent({
                   isParentActive={geoFenceMenuOpen}
                   setActive={setMenuActive}
                 />
+                <AppSideBarLink
+                  to={ROUTES.USER.GEO_FENCE_DETAILS}
+                  IconComponent={AddIcon}
+                  text="Geo-Fence Details"
+                  isNested
+                  menuType="geo-fence"
+                  isParentActive={geoFenceMenuOpen}
+                  setActive={setMenuActive}
+                  hidden
+                />
+                <AppSideBarLink
+                  to={ROUTES.USER.GEO_FENCE_EDIT}
+                  IconComponent={AddIcon}
+                  text="Edit geo fence"
+                  isNested
+                  menuType="geo-fence"
+                  isParentActive={geoFenceMenuOpen}
+                  setActive={setMenuActive}
+                  hidden
+                />
               </List>
             </Collapse>
           </List>

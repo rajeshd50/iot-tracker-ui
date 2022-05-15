@@ -61,3 +61,18 @@ export const encodeDeviceSerial = (serial: string) => {
 export const decodeDeviceSerial = (inputString: string) => {
   return atob(inputString);
 };
+
+export const encodeGeoFenceId = (id: string) => {
+  return btoa(id);
+};
+
+export const decodeGeoFenceId = (inputString: string) => {
+  return atob(inputString);
+};
+
+export const truncateText = (text: string, maxLength: number) => {
+  if (!text || !maxLength || text.length < maxLength) {
+    return text;
+  }
+  return `${text.slice(0, maxLength)}...`;
+};

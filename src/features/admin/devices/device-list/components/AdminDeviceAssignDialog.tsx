@@ -16,7 +16,7 @@ import { Link as RouterLink } from "react-router-dom";
 import UserAutoCompleteSelect from "../../../../../common/components/admin/user-autocomplete-select/UserAutoCompleteSelect";
 import { ROUTES } from "../../../../../constants";
 
-import { Device } from "../../../../../models";
+import { Device, User } from "../../../../../models";
 
 export interface IAdminDeviceAssignDialogProps {
   loading: boolean;
@@ -33,7 +33,7 @@ function AdminDeviceAssignDialog({
   onDeviceAssign,
   device,
 }: IAdminDeviceAssignDialogProps) {
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   return (
     <Dialog
       onClose={onClose}
@@ -66,8 +66,9 @@ function AdminDeviceAssignDialog({
           </Grid>
           <Grid item xs={12}>
             <UserAutoCompleteSelect
-              onSelect={(userId) => setSelectedUser(userId)}
-              onClear={() => setSelectedUser("")}
+              onSelect={(newUser) => setSelectedUser(newUser)}
+              onClear={() => setSelectedUser(null)}
+              selectedUser={selectedUser}
             />
           </Grid>
         </Grid>
@@ -83,11 +84,11 @@ function AdminDeviceAssignDialog({
           Cancel
         </Button>
         <Button
-          disabled={loading || !selectedUser}
+          disabled={loading || !selectedUser || !selectedUser.id}
           variant="contained"
           color="primary"
           type="button"
-          onClick={() => onDeviceAssign(selectedUser)}
+          onClick={() => selectedUser && onDeviceAssign(selectedUser.id)}
         >
           {loading && (
             <CircularProgress

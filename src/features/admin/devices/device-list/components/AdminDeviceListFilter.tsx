@@ -12,10 +12,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UserAutoCompleteSelect from "../../../../../common/components/admin/user-autocomplete-select/UserAutoCompleteSelect";
-import { DeviceAssignStatus, DeviceStatus } from "../../../../../models";
+import { DeviceAssignStatus, DeviceStatus, User } from "../../../../../models";
 
 export interface IAdminDeviceListFilterProps {
   isLoading: boolean;
@@ -31,7 +31,7 @@ export interface IAdminDeviceListFilterProps {
 function AdminDeviceListFilter(props: IAdminDeviceListFilterProps) {
   const { isLoading, onFilterReset, onFilterUpdate } = props;
   const [serial, setSerial] = useState("");
-  const [user, setUser] = useState<string>("");
+  const [user, setUser] = useState<User | null>(null);
   const [deviceStatus, setDeviceStatus] = useState<
     DeviceStatus | string | null
   >("");
@@ -41,14 +41,20 @@ function AdminDeviceListFilter(props: IAdminDeviceListFilterProps) {
 
   const onReset = () => {
     setSerial("");
-    setUser("");
+    setUser(null);
     setDeviceStatus("");
     setAssignedStatus("");
     onFilterReset();
   };
 
+  useEffect(() => {
+    if (!user) {
+      onClickSearch();
+    }
+  }, [user]);
+
   const onClickSearch = () => {
-    onFilterUpdate(serial, user, deviceStatus, assignedStatus);
+    onFilterUpdate(serial, user ? user.id : null, deviceStatus, assignedStatus);
   };
 
   return (
@@ -88,8 +94,9 @@ function AdminDeviceListFilter(props: IAdminDeviceListFilterProps) {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <UserAutoCompleteSelect
-                onSelect={(userId) => setUser(userId)}
-                onClear={() => setUser("")}
+                onSelect={(newUser) => setUser(newUser)}
+                onClear={() => setUser(null)}
+                selectedUser={user}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>

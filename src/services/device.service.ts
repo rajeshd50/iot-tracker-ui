@@ -44,6 +44,8 @@ export interface FetchDeviceDto {
   perPage: number;
   orderBy?: DeviceOrderBy;
   orderByDirection?: OrderByDirection;
+  withGeoFence?: string;
+  withoutGeoFence?: string;
 }
 
 export interface UpdateDeviceAssignmentApprovalDto {

@@ -2,35 +2,36 @@ import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import React, { useEffect, useState, useCallback } from "react";
 import debounce from "lodash/debounce";
 
-import { User } from "../../../../models";
-import { UserService } from "../../../../services";
+import { Device, DeviceStatus } from "../../../../models";
+import { DeviceService, FetchDeviceDto } from "../../../../services";
 
-export interface IUserAutoCompleteSelectProps {
-  selectedUser: User | null;
-  onSelect: (user: User | null) => void;
-  onClear: () => void;
+export interface IDeviceAutoCompleteSelectProps {
+  selectedDevice: Device | null;
+  onSelect: (device: Device | null) => void;
+  defaultFilter?: Partial<FetchDeviceDto>;
 }
 
-function UserAutoCompleteSelect(props: IUserAutoCompleteSelectProps) {
-  const { onSelect, onClear, selectedUser } = props;
-  const randomId = `auto_user_select_${new Date().getTime()}_${Math.ceil(
+function DeviceAutoCompleteSelect(props: IDeviceAutoCompleteSelectProps) {
+  const { onSelect, defaultFilter, selectedDevice } = props;
+  const randomId = `auto_device_select_${new Date().getTime()}_${Math.ceil(
     Math.random() * 200
   )}`;
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [options, setOptions] = useState<User[]>([]);
+  const [options, setOptions] = useState<Device[]>([]);
   const [inputValue, setInputValue] = useState("");
 
-  const loadUsers = async (searchText?: string) => {
+  const loadDevices = async (searchText?: string) => {
     setLoading(true);
     try {
-      const userPaginated = await UserService.fetchAllUsers({
+      const devicePaginated = await DeviceService.fetch({
         page: 1,
         perPage: 10,
         searchText: searchText || undefined,
+        ...(defaultFilter || {}),
       });
-      setOptions(userPaginated.items);
+      setOptions(devicePaginated.items);
     } catch (e: any) {
     } finally {
       setLoading(false);
@@ -40,7 +41,7 @@ function UserAutoCompleteSelect(props: IUserAutoCompleteSelectProps) {
   const searchUserCallback = useCallback(
     debounce(async (text) => {
       setOptions([]);
-      await loadUsers(text);
+      await loadDevices(text);
     }, 500),
     []
   );
@@ -50,22 +51,26 @@ function UserAutoCompleteSelect(props: IUserAutoCompleteSelectProps) {
   }, [inputValue, searchUserCallback]);
 
   useEffect(() => {
-    loadUsers();
+    loadDevices();
   }, []);
 
   return (
-    <Autocomplete<User>
+    <Autocomplete<Device>
       id={randomId}
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      getOptionLabel={(option) => `${option.fullName} (${option.email})`}
+      getOptionLabel={(option) =>
+        `${option.serial} (${
+          option.name || option.vehicleName || option.vehicleNumber
+        })`
+      }
       loading={loading}
       options={options}
-      value={selectedUser}
+      value={selectedDevice}
       filterOptions={(x) => x}
-      noOptionsText="No user found"
+      noOptionsText="No device found"
       onInputChange={(e, newInputValue) => setInputValue(newInputValue)}
       onChange={(e, value) => {
         onSelect(value);
@@ -73,7 +78,7 @@ function UserAutoCompleteSelect(props: IUserAutoCompleteSelectProps) {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Select User"
+          label="Select Device"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -91,4 +96,4 @@ function UserAutoCompleteSelect(props: IUserAutoCompleteSelectProps) {
   );
 }
 
-export default UserAutoCompleteSelect;
+export default DeviceAutoCompleteSelect;

@@ -24,6 +24,7 @@ export const ROUTES = {
     DEVICE_DETAILS: "/device/details/:serial",
     ADD_NEW_DEVICE: "/device/add",
     GEO_FENCES: "/geo-fences",
+    GEO_FENCE_DETAILS: "/geo-fence/view/:id",
     GEO_FENCE_ADD: "/geo-fence/add",
     GEO_FENCE_EDIT: "/geo-fence/update/:id",
   },
