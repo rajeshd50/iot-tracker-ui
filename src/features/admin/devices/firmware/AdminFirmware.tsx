@@ -5,10 +5,11 @@ import AddIcon from "@mui/icons-material/Add";
 import { DeviceFirmware, DeviceFirmwareSyncStatus } from "../../../../models";
 import AdminFirmwareFilter from "./components/AdminFirmwareFilter";
 import { useSnackbar } from "notistack";
-import { DeviceFirmwareService } from "../../../../services";
+import { AddFirmwareDto, DeviceFirmwareService } from "../../../../services";
 import DeviceListTable from "../../../../common/components/device/device-list-table/DeviceListTable";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { formatDateTime } from "../../../../common/util/util";
+import AdminFirmwareAddDialog from "./components/AdminFirmwareAddDialog";
 
 const columns: GridColDef[] = [
   {
@@ -58,7 +59,6 @@ const columns: GridColDef[] = [
 ];
 
 function AdminFirmware() {
-  const [isAddFirmwareLoading, setIsAddFirmwareLoading] = useState(false);
   const [version, setVersion] = useState("");
   const [status, setStatus] = useState<DeviceFirmwareSyncStatus | undefined>(
     undefined
@@ -68,6 +68,9 @@ function AdminFirmware() {
   const [currentPage, setCurrentPage] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
+
+  const [isAddFirmwareLoading, setIsAddFirmwareLoading] = useState(false);
+  const [showAddFirmwareDialog, setShowAddFirmwareDialog] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -99,7 +102,34 @@ function AdminFirmware() {
     loadDeviceFirmwareCallback();
   }, [currentPage, perPage, version, status, loadDeviceFirmwareCallback]);
 
-  const onClickAddFirmware = () => {};
+  const onClickAddFirmware = () => {
+    setShowAddFirmwareDialog(true);
+  };
+
+  const onCloseAddFirmware = () => {
+    setShowAddFirmwareDialog(false);
+  };
+
+  const onAddFirmware = async (file: File, data: AddFirmwareDto) => {
+    try {
+      setIsAddFirmwareLoading(true);
+      await DeviceFirmwareService.add(file, data);
+      enqueueSnackbar("Firmware added successfully", {
+        variant: "success",
+      });
+      await loadDeviceFirmware();
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while adding new firmware",
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setIsAddFirmwareLoading(false);
+      onCloseAddFirmware();
+    }
+  };
 
   const getColumns = () => {
     return [...columns];
@@ -154,6 +184,14 @@ function AdminFirmware() {
         onPageChange={(newPage) => setCurrentPage(newPage)}
         onPerPageChange={(newPerPage) => setPerPage(newPerPage)}
       />
+      {showAddFirmwareDialog && (
+        <AdminFirmwareAddDialog
+          show={showAddFirmwareDialog}
+          onClose={onCloseAddFirmware}
+          onFirmwareAdd={onAddFirmware}
+          loading={isAddFirmwareLoading}
+        />
+      )}
     </Box>
   );
 }
