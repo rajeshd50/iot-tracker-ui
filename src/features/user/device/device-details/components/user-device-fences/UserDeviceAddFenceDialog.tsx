@@ -13,21 +13,23 @@ import {
 import { grey } from "@mui/material/colors";
 import { Link as RouterLink } from "react-router-dom";
 import React, { useState } from "react";
-import { ROUTES } from "../../../../../constants";
-import { Device, GeoFence } from "../../../../../models";
-import DeviceAutoCompleteSelect from "../../../../../common/components/device/device-auto-complete-select/DeviceAutoCompleteSelect";
+import { ROUTES } from "../../../../../../constants";
+import { Device, GeoFence } from "../../../../../../models";
+import GeoFenceAutoCompleteSelect from "../../../../../../common/components/geo-fence/geo-fence-auto-complete-select/GeoFenceAutoCompleteSelect";
 
-export interface IUserGeoFenceAddDeviceDialogProps {
-  geoFence: GeoFence;
+export interface IUserDeviceAddFenceDialogProps {
+  device: Device;
   loading: boolean;
   show: boolean;
   onClose: () => void;
-  onDeviceAssign: (deviceId: string) => void;
+  onGeoFenceAssign: (fenceId: string) => void;
 }
 
-function UserGeoFenceAddDeviceDialog(props: IUserGeoFenceAddDeviceDialogProps) {
-  const { geoFence, loading, show, onClose, onDeviceAssign } = props;
-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+function UserDeviceAddFenceDialog(props: IUserDeviceAddFenceDialogProps) {
+  const { device, loading, show, onClose, onGeoFenceAssign } = props;
+  const [selectedGeoFence, setSelectedGeoFence] = useState<GeoFence | null>(
+    null
+  );
   return (
     <Dialog
       onClose={onClose}
@@ -45,24 +47,24 @@ function UserGeoFenceAddDeviceDialog(props: IUserGeoFenceAddDeviceDialogProps) {
         <Grid container spacing={1} mt={1}>
           <Grid item xs={12}>
             <Alert severity="info">
-              Your are going to connect a device to this geo-fence (
-              {geoFence.name})! You will receive alerts according to preference.
+              Your are going to connect this device (serial no: {device.serial})
+              to a geo-fence! You will receive alerts according to preference.
             </Alert>
           </Grid>
           <Grid item xs={12}>
             <Typography>
-              Please select a device from the below dropdown, you can{" "}
-              <Link component={RouterLink} to={ROUTES.USER.ADD_NEW_DEVICE}>
-                add new device here
+              Please select a geo-fence from the below dropdown, you can{" "}
+              <Link component={RouterLink} to={ROUTES.USER.GEO_FENCE_ADD}>
+                add new fence here
               </Link>
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <DeviceAutoCompleteSelect
-              onSelect={(device) => setSelectedDevice(device)}
-              selectedDevice={selectedDevice}
+            <GeoFenceAutoCompleteSelect
+              selectedGeoFence={selectedGeoFence}
+              onSelect={(fence) => setSelectedGeoFence(fence)}
               defaultFilter={{
-                withoutGeoFence: geoFence.id,
+                withoutDeviceSerial: device.serial,
               }}
             />
           </Grid>
@@ -79,11 +81,13 @@ function UserGeoFenceAddDeviceDialog(props: IUserGeoFenceAddDeviceDialogProps) {
           Cancel
         </Button>
         <Button
-          disabled={loading || !selectedDevice || !selectedDevice.id}
+          disabled={loading || !selectedGeoFence || !selectedGeoFence.id}
           variant="contained"
           color="primary"
           type="button"
-          onClick={() => selectedDevice && onDeviceAssign(selectedDevice.id)}
+          onClick={() =>
+            selectedGeoFence && onGeoFenceAssign(selectedGeoFence.id)
+          }
         >
           {loading && (
             <CircularProgress
@@ -101,4 +105,4 @@ function UserGeoFenceAddDeviceDialog(props: IUserGeoFenceAddDeviceDialogProps) {
   );
 }
 
-export default UserGeoFenceAddDeviceDialog;
+export default UserDeviceAddFenceDialog;

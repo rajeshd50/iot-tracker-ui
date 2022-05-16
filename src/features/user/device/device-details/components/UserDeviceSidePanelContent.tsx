@@ -15,6 +15,7 @@ import DeviceDetailsWidget from "../../../../../common/components/device/device-
 import { Device } from "../../../../../models/device.model";
 import { grey } from "@mui/material/colors";
 import UserDeviceDriverDetails from "./UserDeviceDriverDetails";
+import UserDeviceFenceControl from "./user-device-fences/UserDeviceFenceControl";
 
 export interface IUserDeviceSidePanelContentProps {
   onClose?: () => void;
@@ -134,6 +135,17 @@ function UserDeviceSidePanelContent({
       >
         <Grid item xs={12}>
           <UserDeviceDriverDetails device={device} />
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          padding: "8px 10px",
+        }}
+      >
+        <Grid item xs={12}>
+          <UserDeviceFenceControl device={device} />
         </Grid>
       </Grid>
       <Box

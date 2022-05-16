@@ -2,22 +2,21 @@ import { Box, Fab, Typography } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-import UserDeviceMap from "./components/UserDeviceMap";
 import UserDeviceSidePanel from "./components/UserDeviceSidePanel";
-import {
-  Device,
-  DeviceAssignStatus,
-  DeviceLiveStatus,
-  DeviceStatus,
-} from "../../../../models/device.model";
+import { Device } from "../../../../models/device.model";
 import DeviceDetailsWidget from "../../../../common/components/device/device-details-widget/DeviceDetailsWidget";
-import { grey } from "@mui/material/colors";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../../constants";
 import { decodeDeviceSerial } from "../../../../common/util/util";
 import { useSnackbar } from "notistack";
 import { DeviceService } from "../../../../services";
 import PageDataLoader from "../../../../common/components/page-data-loader/PageDataLoader";
+import UserDeviceMapLoader from "./components/UserDeviceMapLoader";
+import { useAppDispatch } from "../../../../store/hooks";
+import {
+  resetAllDeviceGeoFences,
+  setDeviceDetailsInReducer,
+} from "../../../../store/reducers/deviceGeoFencesSlice";
 
 function UserDeviceDetails() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -32,6 +31,8 @@ function UserDeviceDetails() {
   const [deviceDetails, setDeviceDetails] = useState<Device | null>(null);
   const [deviceDetailsLoading, setDeviceDetailsLoading] = useState(false);
 
+  const dispatch = useAppDispatch();
+
   const gotoDeviceList = () => {
     navigate(ROUTES.USER.DEVICE_LIST);
   };
@@ -41,6 +42,7 @@ function UserDeviceDetails() {
     if (!encodedDeviceSerial) {
       return;
     }
+    dispatch(resetAllDeviceGeoFences());
     const decodedSerial = decodeDeviceSerial(encodedDeviceSerial);
     try {
       setDeviceDetailsLoading(true);
@@ -49,6 +51,7 @@ function UserDeviceDetails() {
       });
       if (deviceData) {
         setDeviceDetails(deviceData);
+        dispatch(setDeviceDetailsInReducer(deviceData));
       } else {
         setDeviceDetailsLoading(false);
         throw new Error("Invalid device");
@@ -101,7 +104,7 @@ function UserDeviceDetails() {
         <Box>
           <DeviceDetailsWidget device={deviceDetails} />
         </Box>
-        <UserDeviceMap device={deviceDetails} />
+        <UserDeviceMapLoader device={deviceDetails} />
       </Box>
       <Fab
         color="primary"

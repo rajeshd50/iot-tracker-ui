@@ -17,6 +17,7 @@ export interface IDeviceListTableProps<T> {
   noRowText?: string;
   noResultText?: string;
   imageWidth?: string;
+  rowsPerPageOptions?: number[];
 }
 
 function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
@@ -34,6 +35,7 @@ function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
     noRowText = "No data available to show",
     noResultText = "No data available to show, try changing filters",
     imageWidth = "250px",
+    rowsPerPageOptions = [10, 15, 20],
   } = props;
   return (
     <Box
@@ -49,7 +51,7 @@ function DeviceListTable<T>(props: IDeviceListTableProps<T>) {
         rowHeight={rowHeight}
         page={page}
         pageSize={perPage}
-        rowsPerPageOptions={[10, 15, 20]}
+        rowsPerPageOptions={rowsPerPageOptions}
         disableSelectionOnClick
         getRowId={(row) => row.id}
         loading={isLoading}

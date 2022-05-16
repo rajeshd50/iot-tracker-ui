@@ -18,7 +18,7 @@ import makeRootReducer from "./reducers";
 const persistConfig: PersistConfig<any> = {
   key: "root",
   storage: localStorage,
-  blacklist: [],
+  blacklist: ["deviceGeoFences"],
 };
 
 const persistedReducer = persistReducer(persistConfig, makeRootReducer());

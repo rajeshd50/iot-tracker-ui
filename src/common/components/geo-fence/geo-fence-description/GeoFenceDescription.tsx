@@ -15,17 +15,17 @@ function GeoFenceDescription({
     return null;
   }
   return (
-    <Tooltip title={description}>
-      <Box
-        sx={{
-          display: "inline-flex",
-        }}
-      >
+    <Box
+      sx={{
+        display: "inline-flex",
+      }}
+    >
+      <Tooltip title={description}>
         <Typography variant="subtitle2" {...typographyProps}>
           {truncateText(description, 120)}
         </Typography>
-      </Box>
-    </Tooltip>
+      </Tooltip>
+    </Box>
   );
 }
 

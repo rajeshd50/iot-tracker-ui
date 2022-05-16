@@ -43,6 +43,7 @@ export const APIS = {
     ADD_TO_DEVICE: "geo-fence/add-to-device",
     REMOVE_FROM_DEVICE: "geo-fence/remove-from-device",
     CHANGE_STATUS: "geo-fence/change-status",
+    FETCH_DEVICE_ALL_FENCES: "geo-fence/fetch-device-fences-all",
   },
   DEVICE_FIRMWARE: {
     ADD: "firmware/add",

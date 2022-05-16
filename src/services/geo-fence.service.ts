@@ -43,6 +43,11 @@ export interface FetchGeoFencesDto {
   withoutDeviceSerial?: string;
 }
 
+export interface FetchDeviceAllGeoFencesDto {
+  status?: GeoFenceStatus | string;
+  deviceSerial: string;
+}
+
 export interface DeleteGeoFenceDto {
   id: string;
 }
@@ -179,6 +184,26 @@ const changeStatus = async (data: ChangeGeoFenceStatusDto) => {
   }
 };
 
+const fetchDeviceAllFences = async (data: FetchDeviceAllGeoFencesDto) => {
+  try {
+    const resp = await BaseApi.post(
+      APIS.GEO_FENCE.FETCH_DEVICE_ALL_FENCES,
+      data
+    );
+    if (resp && resp.status === 200 && resp.data.data) {
+      const respData: PaginatedResponse<GeoFence> = resp.data.data;
+
+      return respData;
+    }
+    throw new Error(
+      getErrorMessage(resp, "Unable to fetch all geo fences for this device")
+    );
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
 export const GeoFenceService = {
   add,
   addToDevice,
@@ -188,4 +213,5 @@ export const GeoFenceService = {
   removeFromDevice,
   update,
   changeStatus,
+  fetchDeviceAllFences,
 };

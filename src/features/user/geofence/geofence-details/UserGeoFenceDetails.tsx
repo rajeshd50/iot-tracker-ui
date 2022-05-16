@@ -43,6 +43,9 @@ function UserGeoFenceDetails() {
   const [showToggleStatusConfirm, setShowToggleStatusConfirm] = useState(false);
   const [isToggleStatusLoading, setIsToggleStatusLoading] = useState(false);
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const gotoGeoFenceList = () => {
     navigate(ROUTES.USER.GEO_FENCES);
   };
@@ -136,6 +139,43 @@ function UserGeoFenceDetails() {
   };
   // toggle active function ends
 
+  // delete function starts
+  const onClickDelete = () => {
+    setShowDeleteConfirm(true);
+  };
+  const onCancelDelete = () => {
+    setShowDeleteConfirm(false);
+  };
+
+  const onConfirmDelete = async () => {
+    if (!geoFenceDetails) {
+      return;
+    }
+    try {
+      setIsDeleteLoading(true);
+      await GeoFenceService.remove({
+        id: geoFenceDetails.id,
+      });
+      enqueueSnackbar("Geo-fence deleted successfully", {
+        variant: "success",
+      });
+      navigate(ROUTES.USER.GEO_FENCES, {
+        replace: true,
+      });
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while deleting geo-fence",
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setIsDeleteLoading(false);
+      onCancelDelete();
+    }
+  };
+  // delete function ends
+
   if (!geoFenceDetails || geoFenceDetailsLoading) {
     return <PageDataLoader />;
   }
@@ -164,6 +204,7 @@ function UserGeoFenceDetails() {
               sx={{
                 marginRight: "15px",
               }}
+              onClick={onClickDelete}
             >
               Delete
             </Button>
@@ -182,7 +223,6 @@ function UserGeoFenceDetails() {
                 minWidth: "160px",
               }}
               startIcon={<EditIcon />}
-              disabled={!geoFenceDetails.isActive}
             >
               Edit geo-fence
             </Button>
@@ -220,7 +260,7 @@ function UserGeoFenceDetails() {
                 </Grid>
                 <Grid item xs={12} mb={1}>
                   <Typography variant="subtitle2">Description</Typography>
-                  <Typography>
+                  <Box>
                     {geoFenceDetails.description ? (
                       <GeoFenceDescription
                         description={geoFenceDetails.description}
@@ -231,7 +271,7 @@ function UserGeoFenceDetails() {
                     ) : (
                       <Typography>N/A</Typography>
                     )}
-                  </Typography>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} mb={1}>
                   <Typography variant="subtitle2">Status</Typography>
@@ -297,6 +337,20 @@ function UserGeoFenceDetails() {
           confirmText={
             geoFenceDetails.isActive ? "Mark as inactive" : "Mark as active"
           }
+          cancelText="Cancel"
+        />
+      ) : null}
+      {showDeleteConfirm ? (
+        <ConfirmDialog
+          title="Confirm to delete geo-fence"
+          subTitle="Geo-fence will be deleted and if any vehicle is associated with it, will be removed!"
+          show={showDeleteConfirm}
+          onCancel={onCancelDelete}
+          onConfirm={onConfirmDelete}
+          isLoading={isDeleteLoading}
+          confirmColor="error"
+          cancelColor="secondary"
+          confirmText="Delete"
           cancelText="Cancel"
         />
       ) : null}

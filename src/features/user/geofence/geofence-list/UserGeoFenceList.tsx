@@ -27,7 +27,7 @@ function UserGeoFenceList() {
 
   const [geoFences, setGeoFences] = useState<GeoFence[]>([]);
   const [totalGeoFences, setTotalGeoFences] = useState(0);
-  const [isDeviceLoading, setIsDeviceLoading] = useState(false);
+  const [isGeoFencesLoading, setIsGeoFencesLoading] = useState(false);
 
   const [searchText, setSearchText] = useState("");
   const [deviceSerial, setDeviceSerial] = useState<string>("");
@@ -40,7 +40,7 @@ function UserGeoFenceList() {
 
   const loadGeoFences = async () => {
     try {
-      setIsDeviceLoading(true);
+      setIsGeoFencesLoading(true);
       const geoFencePaginatedResp = await GeoFenceService.fetch({
         page,
         perPage: DEFAULT_PER_PAGE,
@@ -58,7 +58,7 @@ function UserGeoFenceList() {
         }
       );
     } finally {
-      setIsDeviceLoading(false);
+      setIsGeoFencesLoading(false);
     }
   };
 
@@ -129,7 +129,7 @@ function UserGeoFenceList() {
         }
       />
       <UserGeoFenceListFilter
-        isLoading={isDeviceLoading}
+        isLoading={isGeoFencesLoading}
         onFilterReset={onFilterReset}
         onFilterUpdate={onFilterUpdate}
       />
@@ -158,7 +158,7 @@ function UserGeoFenceList() {
           marginBottom: "96px",
         }}
       >
-        {isDeviceLoading ? (
+        {isGeoFencesLoading ? (
           <>
             <UserGeoFenceLoadingSkelton />
             <UserGeoFenceLoadingSkelton />

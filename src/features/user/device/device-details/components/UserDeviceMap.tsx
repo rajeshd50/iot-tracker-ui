@@ -1,61 +1,56 @@
-import React from "react";
-import { alpha, Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box } from "@mui/material";
 import {
   Device,
   DeviceAssignStatus,
   DeviceStatus,
+  GeoFence,
 } from "../../../../../models";
-import AppImage from "../../../../../common/components/system/AppImage/AppImage";
-import { grey } from "@mui/material/colors";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import { GoogleMap } from "@react-google-maps/api";
+import { IUserDeviceMapLoaderProps } from "./UserDeviceMapLoader";
+import UserDeviceMapFallback from "./maps/UserDeviceMapFallback";
+import {
+  selectDeviceGeoFences,
+  selectFocusFence,
+} from "../../../../../store/reducers/deviceGeoFencesSlice";
+import { useAppSelector } from "../../../../../store/hooks";
+import UserDeviceGeoFenceDraw from "./maps/UserDeviceGeoFenceDraw";
 
-export interface IUserDeviceMapProps {
-  device: Device;
-}
+export interface IUserDeviceMapProps extends IUserDeviceMapLoaderProps {}
 
 function UserDeviceMap({ device }: IUserDeviceMapProps) {
+  const [mapCenter, setMapCenter] = useState<google.maps.LatLngLiteral>({
+    lat: 22.5726,
+    lng: 88.3639,
+  });
+  const [mapZoom, setMapZoom] = useState(14);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const deviceGeoFences: GeoFence[] = useAppSelector(selectDeviceGeoFences);
+  const shouldFocusFence: GeoFence | undefined =
+    useAppSelector(selectFocusFence);
+
+  useEffect(() => {
+    if (shouldFocusFence && shouldFocusFence.bound && map) {
+      map.fitBounds(
+        new google.maps.LatLngBounds(
+          {
+            lat: shouldFocusFence.bound.south,
+            lng: shouldFocusFence.bound.west,
+          },
+          {
+            lat: shouldFocusFence.bound.north,
+            lng: shouldFocusFence.bound.east,
+          }
+        )
+      );
+    }
+  }, [shouldFocusFence, map]);
+
   if (
     device.status === DeviceStatus.INACTIVE ||
     device.assignStatus !== DeviceAssignStatus.ASSIGNED
   ) {
-    return (
-      <Box
-        sx={{
-          height: "calc(100vh - 190px)",
-          width: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: alpha(grey[400], 0.6),
-              zIndex: 10,
-            }}
-          ></Box>
-          <AppImage
-            src="/img/default_map_placeholder.jpeg"
-            imgProps={{
-              width: "100%",
-              height: "100%",
-            }}
-            alt="Default map"
-          />
-        </Box>
-      </Box>
-    );
+    return <UserDeviceMapFallback />;
   }
   return (
     <Box
@@ -64,22 +59,32 @@ function UserDeviceMap({ device }: IUserDeviceMapProps) {
         width: "100%",
       }}
     >
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_KEY || ""}>
-        <GoogleMap
-          mapContainerStyle={{
-            height: "100%",
-            width: "100%",
-          }}
-          center={{
-            lat: 22.5726,
-            lng: 88.3639,
-          }}
-          zoom={10}
-        >
-          {/* Child components, such as markers, info windows, etc. */}
-          <></>
-        </GoogleMap>
-      </LoadScript>
+      <GoogleMap
+        mapContainerStyle={{
+          height: "100%",
+          width: "100%",
+        }}
+        center={mapCenter}
+        zoom={mapZoom}
+        onLoad={(mapInstance) => setMap(mapInstance)}
+        options={{
+          fullscreenControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+        }}
+      >
+        {/* Child components, such as markers, info windows, etc. */}
+        {deviceGeoFences && deviceGeoFences.length ? (
+          <>
+            {deviceGeoFences.map((deviceFence) => (
+              <UserDeviceGeoFenceDraw
+                geoFence={deviceFence}
+                key={deviceFence.id}
+              />
+            ))}
+          </>
+        ) : null}
+      </GoogleMap>
     </Box>
   );
 }

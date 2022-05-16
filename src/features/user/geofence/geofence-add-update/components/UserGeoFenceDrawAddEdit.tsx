@@ -32,6 +32,7 @@ function UserGeoFenceDrawAddEdit(props: IUserGeoFenceDrawAddEditProps) {
     lat: 22.5726,
     lng: 88.3639,
   });
+  const [mapZoom, setMapZoom] = useState(12);
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -373,6 +374,7 @@ function UserGeoFenceDrawAddEdit(props: IUserGeoFenceDrawAddEditProps) {
           mapTypeControl: false,
           streetViewControl: false,
         }}
+        zoom={mapZoom}
       >
         {!shouldDisableAddEdit && (
           <Autocomplete
