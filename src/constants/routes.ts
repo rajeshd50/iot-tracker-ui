@@ -17,6 +17,8 @@ export const ROUTES = {
     RECENT_PURCHASES: "/admin/recent-purchases",
     DASHBOARD: "/admin/dashboard",
     USER_LIST: "/admin/user-list",
+    FIRMWARE: "/admin/firmware",
+    SITE_SETTINGS: "/admin/site-settings",
   },
   USER: {
     DASHBOARD: "/dashboard",

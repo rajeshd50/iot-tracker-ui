@@ -1,16 +1,24 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { formatNumber } from "../../../../../common/util/util";
+import { DashboardDeviceCount } from "../../../../../models";
+
+export interface IAdminDeviceCountChartProps {
+  deviceCount: DashboardDeviceCount | null;
+  isLoading: boolean;
+}
 
 interface IAdminDeviceCountChartLabelsProps {
   label: string;
-  value: number;
+  value?: number;
+  isLoading: boolean;
 }
 
 function AdminDeviceCountChartLabels({
   label,
   value,
+  isLoading,
 }: IAdminDeviceCountChartLabelsProps) {
   return (
     <Box
@@ -31,28 +39,38 @@ function AdminDeviceCountChartLabels({
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography
-            sx={{
-              fontSize: "1rem",
-              fontWeight: 600,
-            }}
-          >
-            {formatNumber(value)}
-          </Typography>
+          {isLoading ? (
+            <Skeleton variant="text" width="60px" />
+          ) : (
+            <Typography
+              sx={{
+                fontSize: "1rem",
+                fontWeight: 600,
+              }}
+            >
+              {formatNumber(value || 0)}
+            </Typography>
+          )}
         </Grid>
       </Grid>
     </Box>
   );
 }
 
-function AdminDeviceCountChart() {
+function AdminDeviceCountChart({
+  deviceCount,
+  isLoading,
+}: IAdminDeviceCountChartProps) {
   const [seriesData, setSeriesData] = useState<ApexNonAxisChartSeries>([]);
   const [chartConfig, setChartConfig] = useState<ApexCharts.ApexOptions>({});
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setSeriesData([50, 20, 75]);
+    if (deviceCount) {
+      setSeriesData([
+        deviceCount.active || 0,
+        deviceCount.inactive || 0,
+        deviceCount.pendingApproval || 0,
+      ]);
       setChartConfig({
         chart: {
           type: "pie",
@@ -63,9 +81,8 @@ function AdminDeviceCountChart() {
           position: "bottom",
         },
       });
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    }
+  }, [deviceCount]);
 
   return (
     <Paper
@@ -81,12 +98,21 @@ function AdminDeviceCountChart() {
         Devices
       </Typography>
       <Box>
-        <ReactApexChart
-          options={chartConfig}
-          series={seriesData}
-          type="pie"
-          height={350}
-        />
+        {isLoading ? (
+          <Skeleton
+            variant="circular"
+            width="300px"
+            height="300px"
+            animation="pulse"
+          />
+        ) : (
+          <ReactApexChart
+            options={chartConfig}
+            series={seriesData}
+            type="pie"
+            height={350}
+          />
+        )}
       </Box>
       <Box>
         <Grid
@@ -99,16 +125,32 @@ function AdminDeviceCountChart() {
           }}
         >
           <Grid item xs={6}>
-            <AdminDeviceCountChartLabels label="Total" value={100} />
+            <AdminDeviceCountChartLabels
+              label="Total"
+              value={deviceCount?.total}
+              isLoading={isLoading}
+            />
           </Grid>
           <Grid item xs={6}>
-            <AdminDeviceCountChartLabels label="Active" value={75} />
+            <AdminDeviceCountChartLabels
+              label="Active"
+              value={deviceCount?.active}
+              isLoading={isLoading}
+            />
           </Grid>
           <Grid item xs={6}>
-            <AdminDeviceCountChartLabels label="Pending" value={5} />
+            <AdminDeviceCountChartLabels
+              label="Pending"
+              value={deviceCount?.pendingApproval}
+              isLoading={isLoading}
+            />
           </Grid>
           <Grid item xs={6}>
-            <AdminDeviceCountChartLabels label="Inactive" value={20} />
+            <AdminDeviceCountChartLabels
+              label="Inactive"
+              value={deviceCount?.inactive}
+              isLoading={isLoading}
+            />
           </Grid>
         </Grid>
       </Box>

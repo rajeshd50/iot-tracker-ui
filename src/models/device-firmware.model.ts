@@ -15,4 +15,5 @@ export interface DeviceFirmware extends BaseModel {
   syncAt?: string;
   syncBy?: User;
   createdBy?: User;
+  devicesSynced: number;
 }

@@ -26,6 +26,8 @@ import AddIcon from "@mui/icons-material/Add";
 import FenceIcon from "@mui/icons-material/Fence";
 import MapIcon from "@mui/icons-material/Map";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
+import TerminalIcon from "@mui/icons-material/Terminal";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
@@ -51,7 +53,12 @@ interface IAppDrawerComponentProps {
   isHovering?: boolean;
   isMobile?: boolean;
 }
-export type MENU_TYPES = "device" | "user" | "account" | "geo-fence";
+export type MENU_TYPES =
+  | "device"
+  | "user"
+  | "account"
+  | "geo-fence"
+  | "site-settings";
 function AppDrawerComponent({
   isHovering = false,
   isMobile = false,
@@ -62,6 +69,7 @@ function AppDrawerComponent({
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [geoFenceMenuOpen, setGeoFenceMenuOpen] = useState(false);
+  const [siteSettingsMenuOpen, setSiteSettingsMenuOpen] = useState(false);
   const theme = useTheme();
   const isAdmin = useAppSelector(selectIsUserAdmin);
   const getUserBadge = () => {
@@ -83,6 +91,9 @@ function AppDrawerComponent({
         break;
       case "geo-fence":
         setGeoFenceMenuOpen(true);
+        break;
+      case "site-settings":
+        setSiteSettingsMenuOpen(true);
         break;
     }
   };
@@ -247,6 +258,17 @@ function AppDrawerComponent({
                 isParentActive={deviceMenuOpen}
                 setActive={setMenuActive}
               />
+              {isAdmin && (
+                <AppSideBarLink
+                  to={ROUTES.ADMIN.FIRMWARE}
+                  IconComponent={TerminalIcon}
+                  text="Firmware"
+                  isNested
+                  menuType="device"
+                  isParentActive={deviceMenuOpen}
+                  setActive={setMenuActive}
+                />
+              )}
               {!isAdmin ? (
                 <AppSideBarLink
                   to={ROUTES.USER.ADD_NEW_DEVICE}
@@ -374,6 +396,24 @@ function AppDrawerComponent({
                 />
               </List>
             </Collapse>
+          </List>
+        )}
+        {isAdmin && (
+          <List
+            subheader={
+              <ListSubheader component="div" id="site-subheader">
+                <Typography variant="h6">Site Management</Typography>
+              </ListSubheader>
+            }
+          >
+            <AppSideBarLink
+              to={ROUTES.ADMIN.SITE_SETTINGS}
+              IconComponent={SettingsApplicationsIcon}
+              text="Site Settings"
+              menuType="site-settings"
+              isParentActive={siteSettingsMenuOpen}
+              setActive={setMenuActive}
+            />
           </List>
         )}
         <List

@@ -4,7 +4,7 @@ import { formatNumber } from "../../../../common/util/util";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 
 export interface IAdminUserCountWidgetProps {
-  value: number;
+  value?: number;
   isLoading: boolean;
 }
 
@@ -16,7 +16,7 @@ function AdminUserCountWidget({
     <AdminDashboardWidget
       icon={<SupervisedUserCircleIcon />}
       title="Users"
-      value={formatNumber(value)}
+      value={formatNumber(value || 0)}
       titleColor="rgb(4, 41, 122)"
       valueColor="rgb(4, 41, 122)"
       iconColor="rgb(12, 83, 183)"

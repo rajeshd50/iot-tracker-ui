@@ -4,7 +4,7 @@ import AdminDashboardWidget from "./AdminDashboardWidget";
 import { formatNumber } from "../../../../common/util/util";
 
 export interface IAdminDeviceCountWidgetProps {
-  value: number;
+  value?: number;
   isLoading: boolean;
 }
 
@@ -16,7 +16,7 @@ function AdminDeviceCountWidget({
     <AdminDashboardWidget
       icon={<DeveloperBoardIcon />}
       title="Devices"
-      value={formatNumber(value)}
+      value={formatNumber(value || 0)}
       titleColor="rgb(0, 82, 73)"
       valueColor="rgb(0, 82, 73)"
       iconColor="rgb(0, 123, 85)"

@@ -5,3 +5,5 @@ export * from "./paginated-response";
 export * from "./device-firmware.model";
 export * from "./geo-fence.model";
 export * from "./user-with-device.model";
+export * from "./dashboard-device-count.model";
+export * from "./dashboard-user-count.model";

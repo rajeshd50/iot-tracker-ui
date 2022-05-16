@@ -25,6 +25,8 @@ import UserDeviceAddLoadable from "../features/user/device/device-add/UserDevice
 import UserGeoFenceListLoadable from "../features/user/geofence/geofence-list/UserGeoFenceListLoadable";
 import UserGeoFenceAddUpdateLoadable from "../features/user/geofence/geofence-add-update/UserGeoFenceAddUpdateLoadable";
 import UserGeoFenceDetailsLoadable from "../features/user/geofence/geofence-details/UserGeoFenceDetailsLoadable";
+import AdminFirmwareLoadable from "../features/admin/devices/firmware/AdminFirmwareLoadable";
+import AdminSiteSettingsLoadable from "../features/admin/site-settings/AdminSiteSettingsLoadable";
 
 function AppRoute() {
   return (
@@ -76,6 +78,14 @@ function AppRoute() {
       <Route
         path={ROUTES.ADMIN.RECENT_PURCHASES}
         element={withAuthHoc(AdminRecentPurchasesLoadable, ROLE_TYPES.ADMIN)}
+      />
+      <Route
+        path={ROUTES.ADMIN.FIRMWARE}
+        element={withAuthHoc(AdminFirmwareLoadable, ROLE_TYPES.ADMIN)}
+      />
+      <Route
+        path={ROUTES.ADMIN.SITE_SETTINGS}
+        element={withAuthHoc(AdminSiteSettingsLoadable, ROLE_TYPES.ADMIN)}
       />
       {/* user routes */}
       <Route

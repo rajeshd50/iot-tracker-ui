@@ -51,4 +51,8 @@ export const APIS = {
     FETCH: "firmware/fetch",
     SYNC: "firmware/sync",
   },
+  DASHBOARD_REPORT: {
+    DEVICE_COUNT: "dashboard-report/device-count",
+    USER_COUNT: "dashboard-report/user-count",
+  },
 };

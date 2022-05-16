@@ -4,7 +4,7 @@ import AdminDashboardWidget from "./AdminDashboardWidget";
 import { formatNumber } from "../../../../common/util/util";
 
 export interface IAdminNewDeviceCountWidgetProps {
-  value: number;
+  value?: number;
   isLoading: boolean;
 }
 
@@ -16,7 +16,7 @@ function AdminNewDeviceCountWidget({
     <AdminDashboardWidget
       icon={<AddToQueueIcon />}
       title="Recent Purchases"
-      value={formatNumber(value)}
+      value={formatNumber(value || 0)}
       titleColor="rgb(122, 79, 1)"
       valueColor="rgb(122, 79, 1)"
       iconColor="rgb(183, 129, 3)"

@@ -1,6 +1,9 @@
 import { Box, Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
+import React, { useCallback, useEffect, useState } from "react";
 import UserWelcome from "../../../common/components/dashboard/user-welcome/UserWelcome";
+import { DashboardDeviceCount, DashboardUserCount } from "../../../models";
+import { DashboardService } from "../../../services";
 import AdminDeviceCountWidget from "./components/AdminDeviceCountWidget";
 import AdminNewDeviceCountWidget from "./components/AdminNewDeviceCountWidget";
 import AdminSupportCountWidget from "./components/AdminSupportCountWidget";
@@ -9,22 +12,36 @@ import AdminDeviceCountChart from "./components/charts/AdminDeviceCountChart";
 import AdminDeviceEventsChart from "./components/charts/AdminDeviceEventsChart";
 
 function AdminDashboard() {
-  const [totalDevices, setTotalDevices] = useState(0);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [totalNewDevices, setTotalNewDevices] = useState(0);
   const [totalSupportTickets, setTotalSupportTickets] = useState(0);
+  const [deviceCount, setDeviceCount] = useState<DashboardDeviceCount | null>(
+    null
+  );
+  const [userCount, setUserCount] = useState<DashboardUserCount | null>(null);
 
   const [isDashboardWidgetDataLoading, setIsDashboardWidgetDataLoading] =
     useState(true);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const loadDashboardData = async () => {
+    try {
+      setIsDashboardWidgetDataLoading(true);
+      const deviceCountResp = await DashboardService.deviceCount();
+      const userCountResp = await DashboardService.userCount();
+
+      setDeviceCount(deviceCountResp);
+      setUserCount(userCountResp);
+      setTotalSupportTickets(1250);
+    } catch (e) {
+      enqueueSnackbar("Error while fetching data", {
+        variant: "error",
+      });
+    } finally {
+      setIsDashboardWidgetDataLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setTimeout(() => {
-      setTotalDevices(12562);
-      setTotalUsers(8596);
-      setTotalNewDevices(560);
-      setTotalSupportTickets(1452);
-      setIsDashboardWidgetDataLoading(false);
-    }, 2000);
+    loadDashboardData();
   }, []);
 
   return (
@@ -38,19 +55,19 @@ function AdminDashboard() {
       <Grid container mt={1} mb={1} spacing={2}>
         <Grid item xs={12} sm={6} md={3}>
           <AdminDeviceCountWidget
-            value={totalDevices}
+            value={deviceCount?.total}
             isLoading={isDashboardWidgetDataLoading}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <AdminUserCountWidget
-            value={totalUsers}
+            value={userCount?.total}
             isLoading={isDashboardWidgetDataLoading}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <AdminNewDeviceCountWidget
-            value={totalNewDevices}
+            value={deviceCount?.pendingApproval}
             isLoading={isDashboardWidgetDataLoading}
           />
         </Grid>
@@ -66,7 +83,10 @@ function AdminDashboard() {
           <AdminDeviceEventsChart />
         </Grid>
         <Grid item xs={12} sm={12} md={3}>
-          <AdminDeviceCountChart />
+          <AdminDeviceCountChart
+            deviceCount={deviceCount}
+            isLoading={isDashboardWidgetDataLoading}
+          />
         </Grid>
       </Grid>
     </Box>
