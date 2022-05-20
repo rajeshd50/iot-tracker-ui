@@ -13,7 +13,7 @@ export interface DeviceFirmware extends BaseModel {
   syncStatus: DeviceFirmwareSyncStatus;
   isLatest: boolean;
   syncAt?: string;
-  syncBy?: User;
   createdBy?: User;
-  devicesSynced: number;
+  signedUrl?: string;
+  signedUrlExpiresAt?: string;
 }

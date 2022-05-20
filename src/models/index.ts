@@ -7,3 +7,4 @@ export * from "./geo-fence.model";
 export * from "./user-with-device.model";
 export * from "./dashboard-device-count.model";
 export * from "./dashboard-user-count.model";
+export * from "./device-firmware-sync.model";

@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import grey from "@mui/material/colors/grey";
+import { globalDialogClose } from "../../util/util";
 
 type ButtonColor =
   | "inherit"
@@ -48,7 +49,7 @@ function ConfirmDialog(props: IConfirmDialogProps) {
   } = props;
   return (
     <Dialog
-      onClose={onCancel}
+      onClose={globalDialogClose(onCancel)}
       open={show}
       maxWidth="sm"
       fullWidth

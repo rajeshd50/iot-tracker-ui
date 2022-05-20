@@ -6,6 +6,7 @@ import {
   DeviceFirmware,
   DeviceFirmwareSyncStatus,
 } from "../models";
+import { DeviceFirmwareSync } from "../models/device-firmware-sync.model";
 
 export interface AddFirmwareDto {
   version: string;
@@ -23,6 +24,16 @@ export interface FetchDeviceFirmwareDto {
 }
 
 export interface SyncFirmwareDto {
+  id: string;
+  isAllDeviceSelected: boolean;
+  attachedDevices?: string[];
+}
+
+export interface FetchSyncListDto {
+  id: string;
+}
+
+export interface RegenerateFirmwareLinkDto {
   id: string;
 }
 
@@ -81,7 +92,7 @@ const fetch = async (data: FetchDeviceFirmwareDto) => {
 const sync = async (data: SyncFirmwareDto) => {
   try {
     const resp = await BaseApi.post(APIS.DEVICE_FIRMWARE.SYNC, data);
-    if (resp && resp.status === 200 && resp.data.data) {
+    if (resp && resp.status === 201 && resp.data.data) {
       const respData: DeviceFirmware = resp.data.data;
 
       return respData;
@@ -95,9 +106,45 @@ const sync = async (data: SyncFirmwareDto) => {
   }
 };
 
+const syncList = async (data: FetchSyncListDto) => {
+  try {
+    const resp = await BaseApi.post(APIS.DEVICE_FIRMWARE.GET_SYNC_LIST, data);
+    if (resp && resp.status === 200 && resp.data.data) {
+      const respData: DeviceFirmwareSync[] = resp.data.data;
+
+      return respData;
+    }
+    throw new Error(
+      getErrorMessage(resp, "Unable to fetch device firmware sync list")
+    );
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+const regenerateLink = async (data: RegenerateFirmwareLinkDto) => {
+  try {
+    const resp = await BaseApi.post(APIS.DEVICE_FIRMWARE.REGENERATE_LINK, data);
+    if (resp && resp.status === 201 && resp.data.data) {
+      const respData: DeviceFirmware = resp.data.data;
+
+      return respData;
+    }
+    throw new Error(
+      getErrorMessage(resp, "Unable to regenerate firmware link")
+    );
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
 export const DeviceFirmwareService = {
   add,
   remove,
   fetch,
   sync,
+  regenerateLink,
+  syncList,
 };

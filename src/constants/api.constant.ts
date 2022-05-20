@@ -50,6 +50,8 @@ export const APIS = {
     DELETE: "firmware/remove",
     FETCH: "firmware/fetch",
     SYNC: "firmware/sync",
+    REGENERATE_LINK: "firmware/regenerate-link",
+    GET_SYNC_LIST: "firmware/sync-list",
   },
   DASHBOARD_REPORT: {
     DEVICE_COUNT: "dashboard-report/device-count",

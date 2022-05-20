@@ -76,3 +76,12 @@ export const truncateText = (text: string, maxLength: number) => {
   }
   return `${text.slice(0, maxLength)}...`;
 };
+
+export const globalDialogClose = (closeFun: any) => {
+  return (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+    if (reason === "backdropClick" || reason === "escapeKeyDown") {
+      return;
+    }
+    closeFun();
+  };
+};
