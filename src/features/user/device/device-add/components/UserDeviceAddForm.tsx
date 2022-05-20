@@ -78,7 +78,7 @@ function UserDeviceAddForm() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [isAddDeviceLoading, setIsAddDeviceLoading] = useState(false);
-  const [addAdditionalInfo, setAddAdditionalInfo] = React.useState(false);
+  const [addAdditionalInfo, setAddAdditionalInfo] = useState(false);
 
   const [showQrScanner, setShowQrScanner] = useState(false);
 

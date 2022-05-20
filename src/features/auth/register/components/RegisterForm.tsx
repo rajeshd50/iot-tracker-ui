@@ -26,8 +26,14 @@ import {
 
 const registerSchema = yup
   .object({
-    firstName: yup.string().required("First name is required"),
-    lastName: yup.string().required("Last name is required"),
+    firstName: yup
+      .string()
+      .max(60, "First name should be within 60 characters")
+      .required("First name is required"),
+    lastName: yup
+      .string()
+      .max(60, "Last name should be within 60 characters")
+      .required("Last name is required"),
     email: yup
       .string()
       .email("Please enter a valid email")
