@@ -35,4 +35,5 @@ export interface Device extends BaseModel {
   driverName?: string;
   driverContact?: string;
   driverOtherDetails?: string;
+  maxFence: number;
 }

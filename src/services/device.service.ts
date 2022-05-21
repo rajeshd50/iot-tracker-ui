@@ -58,6 +58,11 @@ export interface UpdateDeviceStatusDto {
   status: DeviceStatus;
 }
 
+export interface UpdateDeviceLimitDto {
+  serial: string;
+  maxFence: number;
+}
+
 export interface DeviceDetailsDto {
   id?: string;
   serial?: string;
@@ -150,6 +155,21 @@ const updateStatus = async (data: UpdateDeviceStatusDto) => {
   }
 };
 
+const updateLimit = async (data: UpdateDeviceLimitDto) => {
+  try {
+    const resp = await BaseApi.post(APIS.DEVICE.UPDATE_LIMIT, data);
+    if (resp && resp.status === 200 && resp.data.data) {
+      const deviceData: Device = resp.data.data;
+
+      return deviceData;
+    }
+    throw new Error(getErrorMessage(resp, "Unable to update device limit"));
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
 const details = async (data: DeviceDetailsDto) => {
   try {
     const resp = await BaseApi.post(APIS.DEVICE.DETAILS, data);
@@ -202,4 +222,5 @@ export const DeviceService = {
   details,
   remove,
   assign,
+  updateLimit,
 };

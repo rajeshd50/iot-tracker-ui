@@ -76,6 +76,12 @@ export interface UpdateUserStatusDto {
   isActive: boolean;
 }
 
+export interface UpdateUserLimitDto {
+  id: string;
+  maxDevice: number;
+  maxFencePerDevice: number;
+}
+
 const login = async ({ email, password }: LoginData) => {
   try {
     const loginResponse = await BaseApi.post(APIS.AUTH.LOGIN, {
@@ -352,6 +358,21 @@ const updateUserStatus = async (data: UpdateUserStatusDto) => {
   }
 };
 
+const updateUserLimit = async (data: UpdateUserLimitDto) => {
+  try {
+    const addResp = await BaseApi.post(APIS.USER.UPDATE_LIMIT, data);
+    if (addResp && addResp.status === 200 && addResp.data.data) {
+      const user: UserWithDevice = addResp.data.data;
+
+      return user;
+    }
+    throw new Error(getErrorMessage(addResp, "Unable to update user limit"));
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
 export const UserService = {
   login,
   register,
@@ -366,4 +387,5 @@ export const UserService = {
   fetchUsersWithDeviceStat,
   fetchUserDetails,
   updateUserStatus,
+  updateUserLimit,
 };

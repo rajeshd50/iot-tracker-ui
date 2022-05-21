@@ -12,7 +12,11 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PageHeader from "../../../../common/components/page-header/PageHeader";
 import AdminDeviceListFilter from "./components/AdminDeviceListFilter";
 import { Device, DeviceAssignStatus, DeviceStatus } from "../../../../models";
-import { DeviceOrderBy, DeviceService } from "../../../../services";
+import {
+  DeviceOrderBy,
+  DeviceService,
+  UpdateDeviceLimitDto,
+} from "../../../../services";
 import {
   GridActionsCellItem,
   GridColDef,
@@ -28,6 +32,8 @@ import AdminDeviceUserCell from "./components/AdminDeviceUserCell";
 import AdminDeviceStatusCell from "./components/AdminDeviceStatusCell";
 import AdminUserInfoDialog from "./components/AdminUserInfoDialog";
 import AdminDeviceAssignDialog from "./components/AdminDeviceAssignDialog";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import AdminDeviceLimitUpdateDialog from "./components/AdminDeviceLimitUpdateDialog";
 
 const columns: GridColDef[] = [
   {
@@ -124,6 +130,16 @@ function AdminDeviceList() {
   const [isDeviceAssigningLoading, setIsDeviceAssigningLoading] =
     useState(false);
   // device assign variables ends
+
+  // user limit update variables
+  const [showDeviceLimitUpdateDialog, setShowDeviceLimitUpdateDialog] =
+    useState(false);
+  const [deviceToUpdateLimit, setDeviceToUpdateLimit] = useState<Device | null>(
+    null
+  );
+  const [isDeviceLimitUpdateLoading, setIsDeviceLimitUpdateLoading] =
+    useState(false);
+  // user limit update variables ends
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -316,6 +332,44 @@ function AdminDeviceList() {
   };
   // view user info functions ends
 
+  const onClickUpdateLimit = (device: Device) => {
+    setShowDeviceLimitUpdateDialog(true);
+    setDeviceToUpdateLimit(device);
+  };
+
+  const onCloseUpdateLimit = () => {
+    setShowDeviceLimitUpdateDialog(false);
+    setDeviceToUpdateLimit(null);
+  };
+
+  const onUpdateLimit = async (data: UpdateDeviceLimitDto) => {
+    try {
+      setIsDeviceLimitUpdateLoading(true);
+      const updatedDevice = await DeviceService.updateLimit(data);
+      enqueueSnackbar("Device limit updated", {
+        variant: "success",
+      });
+      setDevices(
+        devices.map((device) => {
+          if (device.id === updatedDevice.id) {
+            return updatedDevice;
+          }
+          return device;
+        })
+      );
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while updating device limit",
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setIsDeviceLimitUpdateLoading(false);
+      onCloseUpdateLimit();
+    }
+  };
+
   const getRowActions = (params: GridRowParams<Device>): JSX.Element[] => {
     const actions: JSX.Element[] = [];
     if (params.row.assignStatus === DeviceAssignStatus.PENDING_APPROVAL) {
@@ -373,6 +427,14 @@ function AdminDeviceList() {
             ? "Mark as inactive"
             : "Mark as active"
         }
+      />
+    );
+    actions.push(
+      <GridActionsCellItem
+        icon={<AddTaskIcon color="primary" />}
+        onClick={() => onClickUpdateLimit(params.row)}
+        label="Update limit"
+        showInMenu
       />
     );
     if (params.row.assignStatus === DeviceAssignStatus.NOT_ASSIGNED) {
@@ -526,6 +588,15 @@ function AdminDeviceList() {
           onClose={onCloseDeviceAssign}
           onDeviceAssign={onDeviceAssign}
           loading={isDeviceAssigningLoading}
+        />
+      ) : null}
+      {showDeviceLimitUpdateDialog && deviceToUpdateLimit ? (
+        <AdminDeviceLimitUpdateDialog
+          loading={isDeviceLimitUpdateLoading}
+          onClose={onCloseUpdateLimit}
+          show={showDeviceLimitUpdateDialog}
+          device={deviceToUpdateLimit}
+          onUpdateLimit={onUpdateLimit}
         />
       ) : null}
     </Box>

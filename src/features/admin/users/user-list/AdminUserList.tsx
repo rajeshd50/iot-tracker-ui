@@ -15,11 +15,17 @@ import PageHeader from "../../../../common/components/page-header/PageHeader";
 import { formatDateTime } from "../../../../common/util/util";
 import { User } from "../../../../models";
 import { UserWithDevice } from "../../../../models/user-with-device.model";
-import { AddUserData, UserService } from "../../../../services";
+import {
+  AddUserData,
+  UpdateUserLimitDto,
+  UserService,
+} from "../../../../services";
 import AdminUserListActionComponent from "./components/AdminUserListActionComponent";
 import AdminUserListFilter from "./components/AdminUserListFilter";
 import ConfirmDialog from "../../../../common/components/confirm-dialog/ConfirmDialog";
 import AdminAddUserDialog from "./components/AdminAddUserDialog";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import AdminUserLimitUpdateDialog from "./components/AdminUserLimitUpdateDialog";
 
 const columns: GridColDef[] = [
   {
@@ -114,6 +120,15 @@ function AdminUserList() {
   const [userToToggle, setUserToToggle] = useState<UserWithDevice | null>(null);
   const [isToggleStatusLoading, setIsToggleStatusLoading] = useState(false);
   // toggle status variables ends
+
+  // user limit update variables
+  const [showUserLimitUpdateDialog, setShowUserLimitUpdateDialog] =
+    useState(false);
+  const [userToUpdateLimit, setUserToUpdateLimit] =
+    useState<UserWithDevice | null>(null);
+  const [isUserLimitUpdateLoading, setIsUserLimitUpdateLoading] =
+    useState(false);
+  // user limit update variables ends
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -220,6 +235,44 @@ function AdminUserList() {
     }
   };
 
+  const onClickUpdateLimit = (user: UserWithDevice) => {
+    setShowUserLimitUpdateDialog(true);
+    setUserToUpdateLimit(user);
+  };
+
+  const onCloseUpdateLimit = () => {
+    setShowUserLimitUpdateDialog(false);
+    setUserToUpdateLimit(null);
+  };
+
+  const onUpdateLimit = async (data: UpdateUserLimitDto) => {
+    try {
+      setIsUserLimitUpdateLoading(true);
+      const updatedUser = await UserService.updateUserLimit(data);
+      enqueueSnackbar("User limit updated", {
+        variant: "success",
+      });
+      setUsers(
+        users.map((user) => {
+          if (user.id === updatedUser.id) {
+            return updatedUser;
+          }
+          return user;
+        })
+      );
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while updating user limit",
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setIsUserLimitUpdateLoading(false);
+      onCloseUpdateLimit();
+    }
+  };
+
   const getColumns = () => {
     return [
       ...columns,
@@ -244,6 +297,12 @@ function AdminUserList() {
             }
             onClick={() => onClickToggleActiveStatus(params.row)}
             label={params.row.isActive ? "Mark as inactive" : "Mark as active"}
+          />,
+          <GridActionsCellItem
+            icon={<AddTaskIcon color="primary" />}
+            onClick={() => onClickUpdateLimit(params.row)}
+            label="Update limit"
+            showInMenu
           />,
         ],
       },
@@ -312,12 +371,23 @@ function AdminUserList() {
           cancelText="Cancel"
         />
       ) : null}
-      <AdminAddUserDialog
-        loading={addingNewUser}
-        onClose={onAddUserClose}
-        show={showAddUserDialog}
-        onAddUser={onAddUser}
-      />
+      {showAddUserDialog ? (
+        <AdminAddUserDialog
+          loading={addingNewUser}
+          onClose={onAddUserClose}
+          show={showAddUserDialog}
+          onAddUser={onAddUser}
+        />
+      ) : null}
+      {showUserLimitUpdateDialog && userToUpdateLimit ? (
+        <AdminUserLimitUpdateDialog
+          loading={isUserLimitUpdateLoading}
+          onClose={onCloseUpdateLimit}
+          show={showUserLimitUpdateDialog}
+          user={userToUpdateLimit}
+          onUpdateLimit={onUpdateLimit}
+        />
+      ) : null}
     </Box>
   );
 }

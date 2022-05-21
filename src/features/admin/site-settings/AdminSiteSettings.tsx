@@ -65,13 +65,13 @@ function AdminSiteSettings() {
   const loadSiteConfigs = async () => {
     try {
       setIsSearchLoading(true);
-      const devices = await SiteConfigService.fetchAll({
+      const configs = await SiteConfigService.fetchAll({
         searchText: searchText ? searchText : undefined,
         page: currentPage + 1,
         perPage,
       });
-      setTotal(devices.total);
-      setSiteConfigs(devices.items);
+      setTotal(configs.total);
+      setSiteConfigs(configs.items);
     } catch (e) {
       enqueueSnackbar("Error while fetching site configs", {
         variant: "error",
@@ -99,7 +99,30 @@ function AdminSiteSettings() {
     setShowUpdateDialog(false);
   };
 
-  const onEdit = async (data: UpdateSiteConfigDto) => {};
+  const onEdit = async (data: UpdateSiteConfigDto) => {
+    try {
+      setIsUpdateLoading(true);
+      const updatedConfig = await SiteConfigService.update(data);
+      enqueueSnackbar("Site config updated", {
+        variant: "success",
+      });
+      setSiteConfigs(
+        siteConfigs.map((sc) => {
+          if (sc.id === updatedConfig.id) {
+            return updatedConfig;
+          }
+          return sc;
+        })
+      );
+    } catch (e) {
+      enqueueSnackbar("Error while updating site config", {
+        variant: "error",
+      });
+    } finally {
+      setIsUpdateLoading(false);
+      onCloseEdit();
+    }
+  };
 
   const getColumns = () => {
     return [

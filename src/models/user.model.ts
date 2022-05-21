@@ -19,4 +19,6 @@ export interface User extends BaseModel {
   primaryContactNumber?: string;
   secondaryContactNumber?: string;
   alternateEmailAddress?: string;
+  maxDevice: number;
+  maxFencePerDevice: number;
 }

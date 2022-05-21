@@ -17,6 +17,7 @@ export const APIS = {
     FETCH_ALL_USER_WITH_DEVICE_STAT: "user/users-with-device-stat",
     FETCH_USER_DETAILS: "user/user-details/:id",
     UPDATE_STATUS: "user/update-user-status",
+    UPDATE_LIMIT: "user/update-user-limit",
   },
   DEVICE_POOL: {
     CREATE: "device-pool/create",
@@ -33,6 +34,7 @@ export const APIS = {
     DETAILS: "device/details",
     DELETE: "device/delete",
     ASSIGN: "device/assign",
+    UPDATE_LIMIT: "device/update-limit",
   },
   GEO_FENCE: {
     ADD: "geo-fence/add",
