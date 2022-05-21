@@ -1,5 +1,6 @@
 import format from "date-fns/format";
 import formatDistance from "date-fns/formatDistance";
+import { SITE_CONFIG_TYPES } from "../../models";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -84,4 +85,36 @@ export const globalDialogClose = (closeFun: any) => {
     }
     closeFun();
   };
+};
+
+export const getSiteConfigValueByType = (
+  value: any,
+  type: SITE_CONFIG_TYPES
+) => {
+  try {
+    switch (type) {
+      case SITE_CONFIG_TYPES.BOOLEAN:
+        if (!value) {
+          return false;
+        }
+        if (value === "true") {
+          return true;
+        }
+        if (value === "false") {
+          return false;
+        }
+        return !!value;
+      case SITE_CONFIG_TYPES.TEXT:
+        return value || "";
+      case SITE_CONFIG_TYPES.NUMBER:
+        return parseInt(String(value), 10);
+      case SITE_CONFIG_TYPES.DATE:
+      case SITE_CONFIG_TYPES.DATE_TIME:
+        return value ? new Date(value) : null;
+      default:
+        return value || "";
+    }
+  } catch (error) {
+    return null;
+  }
 };

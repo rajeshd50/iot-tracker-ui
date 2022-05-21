@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import { ROUTES } from "../../../../../../constants";
 import { Device, GeoFence } from "../../../../../../models";
 import GeoFenceAutoCompleteSelect from "../../../../../../common/components/geo-fence/geo-fence-auto-complete-select/GeoFenceAutoCompleteSelect";
+import { globalDialogClose } from "../../../../../../common/util/util";
 
 export interface IUserDeviceAddFenceDialogProps {
   device: Device;
@@ -32,7 +33,7 @@ function UserDeviceAddFenceDialog(props: IUserDeviceAddFenceDialogProps) {
   );
   return (
     <Dialog
-      onClose={onClose}
+      onClose={globalDialogClose(onClose)}
       open={show}
       maxWidth="sm"
       fullWidth

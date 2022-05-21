@@ -1,6 +1,5 @@
 import { ADD_ROLE, APIS, ROLE_TYPES } from "../constants";
-import { PaginatedResponse, User } from "../models";
-import { UserWithDevice } from "../models/user-with-device.model";
+import { PaginatedResponse, User, UserWithDevice } from "../models";
 import { BaseApi } from "./base-api";
 import { getErrorMessage } from "./common";
 

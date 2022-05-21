@@ -57,4 +57,9 @@ export const APIS = {
     DEVICE_COUNT: "dashboard-report/device-count",
     USER_COUNT: "dashboard-report/user-count",
   },
+  SITE_CONFIG: {
+    UPDATE: "site-config/update",
+    FETCH: "site-config/fetch",
+    DETAILS: "site-config/details",
+  },
 };
