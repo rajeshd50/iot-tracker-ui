@@ -4,7 +4,7 @@ import { useSnackbar } from "notistack";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { ChangePasswordDto } from "../../../../services";
+import { ChangePasswordDto, UserService } from "../../../../services";
 import {
   Box,
   Button,
@@ -52,8 +52,28 @@ function ChangePasswordDialog({ onCancel, show }: IChangePasswordProps) {
     },
     resolver: yupResolver(changePasswordSchema),
   });
+  const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
-  const onChangePasswordSubmit = async (data: ChangePasswordDto) => {};
+  const onChangePasswordSubmit = async (data: ChangePasswordDto) => {
+    try {
+      setIsLoading(true);
+      await UserService.changePassword(data);
+      enqueueSnackbar("User limit updated", {
+        variant: "success",
+      });
+      setIsLoading(false);
+      onCancel();
+    } catch (e: any) {
+      enqueueSnackbar(
+        e && e.message ? e.message : "Error while changing password",
+        {
+          variant: "error",
+        }
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <Dialog
       onClose={onCancel}

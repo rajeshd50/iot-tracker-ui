@@ -8,6 +8,7 @@ export const APIS = {
     RESET_PASSWORD: "auth/reset-password",
     SEND_VERIFICATION_EMAIL: "auth/send-verification-email",
     VERIFY_EMAIL: "auth/verify-email",
+    CHANGE_PASSWORD: "auth/change-password",
   },
   USER: {
     PROFILE: "user/profile",

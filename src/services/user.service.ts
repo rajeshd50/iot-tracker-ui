@@ -81,6 +81,10 @@ export interface UpdateUserLimitDto {
   maxDevice: number;
   maxFencePerDevice: number;
 }
+export interface ChangePasswordDto {
+  oldPassword: string;
+  newPassword: string;
+}
 
 const login = async ({ email, password }: LoginData) => {
   try {
@@ -373,6 +377,21 @@ const updateUserLimit = async (data: UpdateUserLimitDto) => {
   }
 };
 
+const changePassword = async (data: ChangePasswordDto) => {
+  try {
+    const changePassResp = await BaseApi.post(APIS.AUTH.CHANGE_PASSWORD, data);
+    if (changePassResp && changePassResp.status === 200) {
+      return true;
+    }
+    throw new Error(
+      getErrorMessage(changePassResp, "Error while trying to change password")
+    );
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
 export const UserService = {
   login,
   register,
@@ -388,4 +407,5 @@ export const UserService = {
   fetchUserDetails,
   updateUserStatus,
   updateUserLimit,
+  changePassword,
 };
