@@ -15,6 +15,7 @@ import {
 } from "../../../../../store/reducers/deviceGeoFencesSlice";
 import { useAppSelector } from "../../../../../store/hooks";
 import UserDeviceGeoFenceDraw from "./maps/UserDeviceGeoFenceDraw";
+import UserDeviceLocationMarker from "./maps/UserDeviceLocationMarker";
 
 export interface IUserDeviceMapProps extends IUserDeviceMapLoaderProps {}
 
@@ -74,6 +75,7 @@ function UserDeviceMap({ device }: IUserDeviceMapProps) {
         }}
       >
         {/* Child components, such as markers, info windows, etc. */}
+        <UserDeviceLocationMarker />
         {deviceGeoFences && deviceGeoFences.length ? (
           <>
             {deviceGeoFences.map((deviceFence) => (
