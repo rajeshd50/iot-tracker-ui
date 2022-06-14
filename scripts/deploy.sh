@@ -1,7 +1,24 @@
 #!/usr/bin/env bash
-BUCKET_NAME='vehicle-tracker-ui'
 
-DISTRIBUTION_ID=$1
+if [ ! -f .env.production ]
+then
+  echo "file not present"
+  exit
+fi
+
+export $(cat .env.production | xargs)
+
+if [ -z "$BUCKET_NAME" ]
+then
+  echo "BUCKET_NAME not present"
+  exit
+fi
+
+if [ -z "$DISTRIBUTION_ID" ]
+then
+  echo "DISTRIBUTION_ID not present"
+  exit
+fi
 
 echo "-- Build --"
 npm run build
